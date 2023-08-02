@@ -30,7 +30,7 @@
             terraform
           ];
           shellHook = ''
-            export SHELL=/run/current-system/sw/bin/bash
+            export SHELL=$BASH
             export LANG=en_US.UTF-8
             export PS1="aws|$PS1"
           '';
