@@ -1,3 +1,13 @@
+terraform {
+  cloud {
+    organization = "Karmanplus"
+
+    workspaces {
+      name = "babel-aws"
+    }
+  }
+}
+
 provider "aws" {
   region = var.region
 }

@@ -32,7 +32,8 @@
           shellHook = ''
             export SHELL=$BASH
             export LANG=en_US.UTF-8
-            export PS1="aws|$PS1"
+            export PS1="babel-aws|$PS1"
+            source .secret-tfc.sh
           '';
         };
       });
