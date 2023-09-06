@@ -1,11 +1,13 @@
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
-
 terraform {
+  cloud {
+    organization = "Karmanplus"
+    workspaces { name = "babel-aws" }
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.10.0"
+      version = "~> 5.15.0"
     }
 
     random = {
@@ -14,5 +16,5 @@ terraform {
     }
   }
 
-  required_version = ">= 1.5.0"
+  required_version = ">= 1.5.4"
 }

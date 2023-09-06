@@ -12,28 +12,20 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-
         pkg-name = "aws";
-        aws = pkgs.runCommand
-          "aws"
-          { preferLocalBuild = true; buildInputs = [ pkg-name ]; }
-          '''';
-
         revision = "${self.lastModifiedDate}-${self.shortRev or "dirty"}";
       in {
-        defaultPackage = self.packages.${system}.${pkg-name};
-
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [
             awscli2
             gnumake
+            okta-aws-cli
             terraform
           ];
           shellHook = ''
             export SHELL=$BASH
             export LANG=en_US.UTF-8
             export PS1="babel-aws|$PS1"
-            source .secret-tfc.sh
           '';
         };
       });
