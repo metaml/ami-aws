@@ -13,3 +13,7 @@ module "ecr" {
 module "log-group" {
   source = "./module/log-group"
 }
+
+module "log-stream" {
+  source = "./module/log-stream"
+}
