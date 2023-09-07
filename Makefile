@@ -6,6 +6,9 @@ plan: ## terraform plan
 apply: ## terraform apply
 	terraform apply
 
+init: ## terraform init
+	terraform init
+
 login-aws: OIDC-CLIENT-ID=0oa7at3tgywbIKdo0697
 login-aws: ## login to aws via Okta
 	okta-aws-cli --write-aws-credentials \
