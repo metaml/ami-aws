@@ -1,5 +1,47 @@
 data "aws_caller_identity" "current" {}
 
+resource "aws_iam_role" "babel" {
+  name   = "babel-lambda-role"
+  assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Action": "sts:AssumeRole",
+        "Principal": {
+          "Service": "lambda.amazonaws.com"
+        },
+        "Effect": "Allow",
+        "Sid": ""
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "babel" {
+  name         = "babel-lambda-policy"
+  path         = "/"
+  description  = "IAM policy for AWS lambda babel"
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+       {
+         "Effect": "Allow",
+        "Actions": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        "Resource": "arn:aws:logs:*:*:*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "babel" {
+  role        = aws_iam_role.babel.name
+  policy_arn  = aws_iam_policy.babel.arn
+}
+
 resource "aws_lambda_function" "babel" {
   function_name = "babel"
   timeout       = 7 # seconds
