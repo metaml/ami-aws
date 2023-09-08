@@ -22,6 +22,9 @@ login-tfc: ## login to teraform for API key
 aws-id: ## aws identity
 	aws sts get-caller-identity
 
+dev: ## nix develop
+	nix develop
+
 help: ## help
 	@grep -E '^[a-zA-Z00-9_%-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 	| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-18s\033[0m %s\n", $$1, $$2}'

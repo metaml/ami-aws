@@ -17,3 +17,7 @@ module "log-group" {
 module "log-stream" {
   source = "./module/log-stream"
 }
+
+module "lambda" {
+  source = "./module/lambda"
+}
