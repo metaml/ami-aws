@@ -3,9 +3,6 @@
 plan: ## terraform plan
 	terraform plan
 
-apply: ## terraform apply
-	terraform apply
-
 init: ## terraform init
 	terraform init
 
