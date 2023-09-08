@@ -1,6 +1,6 @@
 resource "aws_ecr_repository" "babel" {
   name = "babel"
-  image_tag_mutability = "IMMUTABLE"
+  image_tag_mutability = "MUTABLE"
   image_scanning_configuration { scan_on_push = true }
   encryption_configuration { encryption_type = "KMS" }
   tags = {
@@ -9,7 +9,6 @@ resource "aws_ecr_repository" "babel" {
     Environment = "production"
     CreatedBy = "github:karmanplus/babel-aws"
   }
-
 }
 
 resource "aws_ecr_repository_policy" "babel" {
