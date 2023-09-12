@@ -17,3 +17,7 @@ module "log" {
 module "lambda" {
   source = "./module/lambda"
 }
+
+module "secret" {
+  source = "./module/secret"
+}
