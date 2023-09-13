@@ -21,7 +21,8 @@ resource "aws_iam_role" "babel" {
 resource "aws_iam_role_policy_attachment" "babel" {
   for_each = toset([
     "arn:aws:iam::aws:policy/AWSLambda_FullAccess",
-    "arn:aws:iam::aws:policy/AWSLambdaExecute"
+    "arn:aws:iam::aws:policy/AWSLambdaExecute",
+    "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
   ])
   role       = aws_iam_role.babel.name
   policy_arn = each.value
@@ -29,7 +30,7 @@ resource "aws_iam_role_policy_attachment" "babel" {
 
 resource "aws_lambda_function" "babel" {
   function_name = "babel"
-  timeout       = 7 # seconds
+  timeout       = 11 # seconds
   image_uri     = "621458661507.dkr.ecr.us-east-2.amazonaws.com/babel:latest"
   package_type  = "Image"
   role = aws_iam_role.babel.arn
