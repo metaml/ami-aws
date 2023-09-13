@@ -24,7 +24,7 @@ resource "aws_iam_role_policy_attachment" "babel" {
     "arn:aws:iam::aws:policy/AWSLambdaExecute",
     "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
   ])
-  role       = aws_iam_role.babel.name
+  role       = "${aws_iam_role.babel.name}"
   policy_arn = each.value
 }
 
@@ -56,7 +56,7 @@ resource "aws_lambda_permission" "babel" {
 resource "aws_s3_bucket_notification" "babel" {
   bucket = "babel-karmanplus-us-east-2"
   lambda_function {
-    lambda_function_arn = aws_lambda_function.babel.arn
+    lambda_function_arn = "${aws_lambda_function.babel.arn}"
     events              = ["s3:ObjectCreated:*"]
     filter_prefix       = null
     filter_suffix       = null
