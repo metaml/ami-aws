@@ -21,3 +21,7 @@ module "lambda" {
 module "secret" {
   source = "./module/secret"
 }
+
+module "opensearch" {
+  source = "./module/opensearch"
+}
