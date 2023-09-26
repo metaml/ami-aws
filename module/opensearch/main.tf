@@ -39,7 +39,7 @@ resource "aws_opensearchserverless_security_policy" "babel-security" {
         }
       ],
       AllowFromPublic = false,
-      SourceVPCEs = [ "vpc-05ff89b3e10be0934" ]
+      SourceVPCEs = [ "vpce-035cc2b67dd2bde1b" ]
     },
     {
       Description = "Public access for dashboards",
@@ -65,14 +65,14 @@ resource "aws_opensearchserverless_access_policy" "babel-collection" {
       Rules = [
         {
           ResourceType = "index",
-          Resource = [ "collection/*" ],
+          Resource = [ "index/github/*", "index/slack/*" ],
           Permission = [
             "aoss:*"
           ]
         },
         {
           ResourceType = "collection",
-          Resource = [ "collection/*" ],
+          Resource = [ "collection/github", "collection/slack" ],
           Permission = [
             "aoss:*"
           ]
@@ -84,3 +84,4 @@ resource "aws_opensearchserverless_access_policy" "babel-collection" {
     }
   ])
 }
+
