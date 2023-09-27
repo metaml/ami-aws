@@ -1,15 +1,15 @@
-resource "aws_secretsmanager_secret" "babel-github" {
-  name = "github-api-token"
+resource "aws_secretsmanager_secret" "babel-github-token" {
+  name = "github-token"
 }
 
-resource "aws_secretsmanager_secret" "babel-slack" {
-  name = "slack-api-token"
+resource "aws_secretsmanager_secret" "babel-slack-token" {
+  name = "slack-token"
 }
 
-output "babel-github" {
-  value = "${aws_secretsmanager_secret.babel-github.arn}"
+output "babel-github-token" {
+  value = "${aws_secretsmanager_secret.babel-github-token.arn}"
 }
 
-output "babel-slack" {
-  value = "${aws_secretsmanager_secret.babel-slack.arn}"
+output "babel-slack-token" {
+  value = "${aws_secretsmanager_secret.babel-slack-token.arn}"
 }
