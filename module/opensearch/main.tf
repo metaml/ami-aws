@@ -38,7 +38,7 @@ resource "aws_opensearchserverless_security_policy" "babel-security" {
           ResourceType = "collection"
         }
       ],
-      AllowFromPublic = true,
+      AllowFromPublic = false,
       SourceVPCEs = [ "vpce-035cc2b67dd2bde1b" ]
     },
     {
