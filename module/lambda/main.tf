@@ -46,6 +46,40 @@ resource "aws_lambda_function" "babel" {
   }
 }
 
+resource "aws_lambda_function" "github" {
+  function_name = "github"
+  timeout       = 11 # seconds
+  image_uri     = "621458661507.dkr.ecr.us-east-2.amazonaws.com/github:latest"
+  package_type  = "Image"
+  role = aws_iam_role.babel.arn
+
+  environment {
+    variables = {
+      Name = "github"
+      Terraform = "true"
+      Environment = "production"
+      CreatedBy = "github:karmanplus/babel-aws"
+   }
+  }
+}
+
+resource "aws_lambda_function" "github" {
+  function_name = "github"
+  timeout       = 11 # seconds
+  image_uri     = "621458661507.dkr.ecr.us-east-2.amazonaws.com/github:latest"
+  package_type  = "Image"
+  role = aws_iam_role.babel.arn
+
+  environment {
+    variables = {
+      Name = "github"
+      Terraform = "true"
+      Environment = "production"
+      CreatedBy = "github:karmanplus/babel-aws"
+   }
+  }
+}
+
 resource "aws_lambda_permission" "babel" {
   statement_id = "AllowS3Invoke"
   action = "lambda:InvokeFunction"
