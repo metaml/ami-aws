@@ -31,7 +31,7 @@ resource "aws_iam_role_policy_attachment" "babel" {
 
 resource "aws_lambda_function" "babel" {
   function_name = "babel"
-  timeout       = 11 # seconds
+  timeout       = 900 # seconds
   image_uri     = "621458661507.dkr.ecr.us-east-2.amazonaws.com/babel:latest"
   package_type  = "Image"
   role = aws_iam_role.babel.arn
@@ -48,7 +48,7 @@ resource "aws_lambda_function" "babel" {
 
 resource "aws_lambda_function" "github" {
   function_name = "github"
-  timeout       = 11 # seconds
+  timeout       = 900 # seconds
   image_uri     = "621458661507.dkr.ecr.us-east-2.amazonaws.com/github:latest"
   package_type  = "Image"
   role = aws_iam_role.babel.arn
@@ -63,9 +63,9 @@ resource "aws_lambda_function" "github" {
   }
 }
 
-resource "aws_lambda_function" "github" {
-  function_name = "github"
-  timeout       = 11 # seconds
+resource "aws_lambda_function" "slack" {
+  function_name = "slack"
+  timeout       = 900 # seconds
   image_uri     = "621458661507.dkr.ecr.us-east-2.amazonaws.com/github:latest"
   package_type  = "Image"
   role = aws_iam_role.babel.arn
