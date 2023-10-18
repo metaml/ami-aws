@@ -22,6 +22,7 @@ resource "aws_iam_role_policy_attachment" "babel" {
   for_each = toset([
     "arn:aws:iam::aws:policy/AWSLambda_FullAccess",
     "arn:aws:iam::aws:policy/AWSLambdaExecute",
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
     "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
     "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
   ])
