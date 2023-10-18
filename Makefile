@@ -9,14 +9,14 @@ apply: ## terraform apply
 init: ## terraform init
 	terraform init
 
-login-aws: OIDC-CLIENT-ID=0oa7at3tgywbIKdo0697
-login-aws: ## login to aws via Okta
+token-aws: OIDC-CLIENT-ID=0oa7at3tgywbIKdo0697
+token-aws: ## AWS token for CLI access
 	okta-aws-cli --write-aws-credentials \
 		--oidc-client-id=$(OIDC-CLIENT-ID) \
 		--org-domain=karmanplus-ext.okta.com \
 		--open-browser
 
-login-tfc: ## login to teraform for API key
+token-tfc: ## terraform token for CLI access
 	terraform login
 
 aws-id: ## aws identity
