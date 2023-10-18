@@ -37,7 +37,7 @@ resource "aws_lambda_function" "babel" {
   role = aws_iam_role.babel.arn
 
   image_config {
-    entry_point = "/bin/babel"
+    entry_point = ["/bin/babel"]
   }
 
   environment {
@@ -58,7 +58,7 @@ resource "aws_lambda_function" "github" {
   role = aws_iam_role.babel.arn
 
   image_config {
-    entry_point = "/bin/github"
+    entry_point = ["/bin/github"]
   }
 
   environment {
@@ -79,7 +79,7 @@ resource "aws_lambda_function" "slack" {
   role = aws_iam_role.babel.arn
 
   image_config {
-    entry_point = "/bin/slack"
+    entry_point = ["/bin/slack"]
   }
 
   environment {
