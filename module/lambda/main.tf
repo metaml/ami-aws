@@ -31,11 +31,14 @@ resource "aws_iam_role_policy_attachment" "babel" {
 
 resource "aws_lambda_function" "babel" {
   function_name = "babel"
-  entry_point   = "/bin/babel"
   timeout       = 900 # seconds
   image_uri     = "621458661507.dkr.ecr.us-east-2.amazonaws.com/babel:latest"
   package_type  = "Image"
   role = aws_iam_role.babel.arn
+
+  image_config {
+    entry_point = "/bin/babel"
+  }
 
   environment {
     variables = {
@@ -49,11 +52,14 @@ resource "aws_lambda_function" "babel" {
 
 resource "aws_lambda_function" "github" {
   function_name = "github"
-  entry_point   = "/bin/github"
   timeout       = 900 # seconds
   image_uri     = "621458661507.dkr.ecr.us-east-2.amazonaws.com/babel:latest"
   package_type  = "Image"
   role = aws_iam_role.babel.arn
+
+  image_config {
+    entry_point = "/bin/github"
+  }
 
   environment {
     variables = {
@@ -67,11 +73,14 @@ resource "aws_lambda_function" "github" {
 
 resource "aws_lambda_function" "slack" {
   function_name = "slack"
-  entry_point   = "/bin/slack"
   timeout       = 900 # seconds
   image_uri     = "621458661507.dkr.ecr.us-east-2.amazonaws.com/babel:latest"
   package_type  = "Image"
   role = aws_iam_role.babel.arn
+
+  image_config {
+    entry_point = "/bin/slack"
+  }
 
   environment {
     variables = {
