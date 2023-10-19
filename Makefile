@@ -3,9 +3,6 @@
 plan: ## terraform plan
 	terraform plan
 
-apply: ## terraform apply
-	terraform apply
-
 init: ## terraform init
 	terraform init
 
@@ -22,8 +19,10 @@ token-tfc: ## terraform token for CLI access
 aws-id: ## aws identity
 	aws sts get-caller-identity
 
+dev: export NIXPKGS_ALLOW_UNFREE=1
 dev: ## nix develop
-	nix develop
+	# impure needed to read the above env var
+	nix develop --impure
 
 help: ## help
 	@grep -E '^[a-zA-Z00-9_%-]+:.*?## .*$$' $(MAKEFILE_LIST) \
