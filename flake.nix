@@ -14,6 +14,8 @@
         pkgs = nixpkgs.legacyPackages.${system};
         pkg-name = "aws";
         revision = "${self.lastModifiedDate}-${self.shortRev or "dirty"}";
+
+
       in {
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [

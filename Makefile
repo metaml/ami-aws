@@ -13,8 +13,8 @@ token-aws: ## AWS token for CLI access
 		--org-domain=karmanplus-ext.okta.com \
 		--open-browser
 
-token-tfc: ## terraform token for CLI access
-	terraform login
+#token-tfc: ## terraform token for CLI access
+#	terraform login
 
 aws-id: ## aws identity
 	aws sts get-caller-identity
