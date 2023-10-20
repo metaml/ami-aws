@@ -18,10 +18,10 @@ module "lambda" {
   source = "./module/lambda"
 }
 
-module "secret" {
-  source = "./module/secret"
+module "rds" {
+  source = "./module/rds"
 }
 
-module "opensearch" {
-  source = "./module/opensearch"
+module "secret" {
+  source = "./module/secret"
 }
