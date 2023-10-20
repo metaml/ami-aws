@@ -8,7 +8,7 @@ data "aws_vpc" "default" {
 }
 
 resource "random_string" "password" {
-  length  = 128
+  length  = 64
   upper   = true
   numeric = true
   special = false
