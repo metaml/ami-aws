@@ -50,7 +50,7 @@ resource "aws_iam_policy_attachment" "rds-monitoring-attachment" {
 resource "aws_db_instance" "babel" {
   identifier             = "babel"
   db_name                = "babel"
-  instance_class         = "db.t2.large"
+  instance_class         = "db.t3.large"
   allocated_storage      = 256
   storage_encrypted      = true
   engine                 = "postgres"
