@@ -1,23 +1,23 @@
-resource "aws_ecr_repository" "babel" {
-  name = "babel"
+resource "aws_ecr_repository" "aip" {
+  name = "aip"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration { scan_on_push = true }
   encryption_configuration { encryption_type = "KMS" }
   tags = {
-    Name = "babel"
+    Name = "aip"
     Terraform = "true"
     Environment = "production"
-    CreatedBy = "github:karmanplus/babel-aws"
+    CreatedBy = "github:recomune/aip-aws"
   }
 }
 
-resource "aws_ecr_repository_policy" "babel" {
-  repository = aws_ecr_repository.babel.name
-  policy = data.aws_iam_policy_document.babel.json
+resource "aws_ecr_repository_policy" "aip" {
+  repository = aws_ecr_repository.aip.name
+  policy = data.aws_iam_policy_document.aip.json
 }
 
-resource "aws_ecr_lifecycle_policy" "babel" {
-  repository = aws_ecr_repository.babel.name
+resource "aws_ecr_lifecycle_policy" "aip" {
+  repository = aws_ecr_repository.aip.name
   policy = <<EOF
   {
     "rules": [
@@ -41,7 +41,7 @@ EOF
 
 data "aws_caller_identity" "current" {}
 
-data "aws_iam_policy_document" "babel" {
+data "aws_iam_policy_document" "aip" {
   statement {
     sid = "EcrRegistryPowerUser"
     actions = [
