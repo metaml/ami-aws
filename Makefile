@@ -1,10 +1,13 @@
-.DEFAULT_GOAL = help
+.DEFAULT_GOAL = plan
 
 export TF_LOG ?= TRACE
 export TF_LOG_PATH = /tmp/tf.log
 
 plan: ## terraform plan
 	terraform plan
+
+apply: ## terraform apply
+	terraform apply
 
 init: update ## terraform init
 

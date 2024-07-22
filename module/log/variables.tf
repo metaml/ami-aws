@@ -7,7 +7,7 @@ variable "create" {
 variable "name" {
   description = "a log-group name"
   type        = string
-  default     = "/aws/lambda/aip"
+  default     = "/aws/aip"
 }
 
 variable "name_prefix" {
