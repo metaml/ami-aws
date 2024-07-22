@@ -7,7 +7,7 @@ variable "create" {
 variable "name" {
   description = "a log-group name"
   type        = string
-  default     = "/aws/lambda/babel"
+  default     = "/aws/lambda/aip"
 }
 
 variable "name_prefix" {
@@ -37,9 +37,9 @@ variable "tags" {
   description = "A map of tags to add to Cloudwatch log group"
   type        = map(string)
   default     = {
-    Name = "babel"
+    Name = "aip"
     Terraform = "true"
     Environment = "production"
-    CreatedBy = "github:karmanplus/babel-aws"
+    CreatedBy = "github:recomune/aip-aws"
   }
 }
