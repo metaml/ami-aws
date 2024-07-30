@@ -22,7 +22,6 @@
             terraform
           ];
           shellHook = ''
-            export AWS_PROFILE=default
             export SHELL=$BASH
             export LANG=en_US.UTF-8
             export PS1="aip-aws|$PS1"
