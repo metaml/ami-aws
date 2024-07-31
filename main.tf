@@ -6,7 +6,6 @@ module "bucket" {
   source = "./module/bucket"
 }
 
-
 module "ecr" {
   source = "./module/ecr"
 }
@@ -17,4 +16,8 @@ module "log" {
 
 module "secret" {
   source = "./module/secret"
+}
+
+module "sns" {
+  source = "./module/sns"
 }
