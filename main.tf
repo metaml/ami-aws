@@ -14,6 +14,10 @@ module "log" {
   source = "./module/log"
 }
 
+module "rds" {
+  source = "./module/rds"
+}
+
 module "secret" {
   source = "./module/secret"
 }
