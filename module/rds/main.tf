@@ -24,15 +24,16 @@ resource "aws_security_group" "aip" {
 resource "aws_iam_role" "aip" {
   name = "aip"
   assume_role_policy = jsonencode({
-  Version = "2012-10-17",
-  Statement = [
-    {
-      Action = "sts:AssumeRole",
-      Effect = "Allow",
-      Principal = {
-        Service = "monitoring.rds.amazonaws.com"
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "monitoring.rds.amazonaws.com"
+        }
       }
-    }]
+    ]
   })
 }
 
@@ -54,7 +55,7 @@ resource "aws_db_instance" "aip" {
   publicly_accessible    = true
   vpc_security_group_ids = [aws_security_group.aip.id]
   username               = "aip"
-  password               = "var.db_password"
+  password               = "***CHANGE-ME***"
   skip_final_snapshot    = true
 
   monitoring_interval = 60 # Interval in seconds (minimum 60 seconds)
