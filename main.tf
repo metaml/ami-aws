@@ -10,6 +10,10 @@ module "ecr" {
   source = "./module/ecr"
 }
 
+module "lambda" {
+  source = "./module/lambda"
+}
+
 module "log" {
   source = "./module/log"
 }
