@@ -20,6 +20,9 @@ dev: export NIXPKGS_ALLOW_UNFREE=1
 dev: ## nix develop
 	nix develop --impure
 
+clean: ## clean
+	find . -name \*~ | xargs rm -f
+
 help: ## help
 	@grep -E '^[a-zA-Z00-9_%-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 	| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -35,3 +38,16 @@ publish-sns: ## publish a message to the aip sns-topic
 	aws sns publish \
 	--topic-arn "arn:aws:sns:us-east-2:975050288432:aip" \
 	--message file://etc/msg.json
+
+linux-aws: ## pull amazon linux (docker) image
+	docker pull public.ecr.aws/amazonlinux/amazonlinux:2023
+
+linux-run: ## shell into aws linux
+	docker run \
+	--interactive \
+	--tty \
+	--volume $$(pwd)/src/s32rds:/s32rds \
+	--security-opt seccomp=unconfined \
+	public.ecr.aws/amazonlinux/amazonlinux:2023 \
+	/bin/bash
+

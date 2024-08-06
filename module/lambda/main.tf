@@ -6,7 +6,7 @@ data "archive_file" "sns2s3" {
 
 data "archive_file" "s32rds" {  
   type = "zip"  
-  source_file = "${path.root}/src/s32rds/s32rds.py" 
+  source_dir = "${path.root}/src/s32rds/" 
   output_path = "s32rds.zip"
 }
 
@@ -78,7 +78,7 @@ resource "aws_lambda_function" "s32rds" {
   function_name    = "s32rds"
   filename         = "s32rds.zip"
   source_code_hash = data.archive_file.s32rds.output_base64sha256
-  runtime          = "python3.12"  
+  runtime          = "python3.11"  
   handler          = "s32rds.handler"  
   timeout          = 900 # seconds
   role             = aws_iam_role.aip.arn

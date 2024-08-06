@@ -12,8 +12,8 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        python = pkgs.python312;
-        python-pkgs = pkgs.python312Packages
+        python = pkgs.python311;
+        python-pkgs = pkgs.python312Packages;
         revision = "${self.lastModifiedDate}-${self.shortRev or "dirty"}";
       in {
         devShell = pkgs.mkShell {
@@ -21,6 +21,9 @@
             awscli2
             gawk
             gnumake
+            python
+            python-pkgs.pip
+            python-pkgs.virtualenv
             terraform
           ];
           shellHook = ''
