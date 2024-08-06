@@ -22,6 +22,7 @@ dev: ## nix develop
 
 clean: ## clean
 	find . -name \*~ | xargs rm -f
+	rm -f *.zip
 
 help: ## help
 	@grep -E '^[a-zA-Z00-9_%-]+:.*?## .*$$' $(MAKEFILE_LIST) \
