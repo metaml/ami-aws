@@ -78,7 +78,7 @@ resource "aws_lambda_function" "s32rds" {
   function_name    = "s32rds"
   filename         = "s32rds.zip"
   source_code_hash = data.archive_file.s32rds.output_base64sha256
-  runtime          = "python3.11"  
+  runtime          = "python3.12"  
   handler          = "s32rds.handler"  
   timeout          = 900 # seconds
   role             = aws_iam_role.aip.arn

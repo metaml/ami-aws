@@ -12,7 +12,8 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        pkg-name = "aws";
+        python = pkgs.python312;
+        python-pkgs = pkgs.python312Packages
         revision = "${self.lastModifiedDate}-${self.shortRev or "dirty"}";
       in {
         devShell = pkgs.mkShell {
