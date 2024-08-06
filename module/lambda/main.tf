@@ -36,7 +36,7 @@ resource "aws_iam_role_policy_attachment" "aip" {
     "arn:aws:iam::aws:policy/AWSLambda_FullAccess",
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess",
     "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
-    "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
+    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
     "arn:aws:iam::aws:policy/AmazonSNSReadOnlyAccess",
     "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
   ])

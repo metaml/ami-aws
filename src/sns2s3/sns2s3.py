@@ -8,13 +8,14 @@ def handler(event, context):
 
 def write_to_s3(rec):
   try:
-    msg = record['Sns']['Message']
-    s3 = boto3.resource("s3").Bucket("aip-recomune-us-esat-2")
-    json.dump_s3(msg, f"michael.lee/dialog/{tick}")
+    msg = rec['Sns']['Message']
+    s3 = boto3.resource("s3")
+    obj = s3.Object("aip-recomune-us-east-2", f"michael.lee/dialog/{tick()}.json")
+    obj.put(Body=msg)
     print(f"message: {msg}")
   except Exception as x:
     print(f"error: {x}")
     raise x
 
-def tick:
-  time.time_ns()//1_000_000
+def tick():
+  return time.time_ns()//1_000_000
