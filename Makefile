@@ -28,6 +28,9 @@ image: ## create a docker image for aws lambda
 
 image-push: ## create a docker image for aws lambda
 	docker tag aip-lambda:latest $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/aip-lambda:latest
+	aws ecr get-login-password --region $(REGION) \
+        | docker login --username AWS --password-stdin $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com
+        docker push $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/aip-lambda:latest
 
 clean: ## clean
 	find . -name \*~ | xargs rm -f
