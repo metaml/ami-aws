@@ -3,6 +3,9 @@
 export TF_LOG ?= TRACE
 export TF_LOG_PATH := /tmp/tf.log
 
+export ACCOUNT_ID = 975050288432
+export REGION = us-east-2
+
 plan: ## terraform plan
 	terraform plan
 
@@ -19,6 +22,12 @@ aws-id: ## aws identity
 dev: export NIXPKGS_ALLOW_UNFREE=1
 dev: ## nix develop
 	nix develop --impure
+
+image: ## create a docker image for aws lambda
+	cd src && make image
+
+image-push: ## create a docker image for aws lambda
+	docker tag aip-lambda:latest $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/aip-lambda:latest
 
 clean: ## clean
 	find . -name \*~ | xargs rm -f

@@ -1,12 +1,12 @@
 data "archive_file" "sns2s3" {  
   type = "zip"  
-  source_file = "${path.root}/src/sns2s3/sns2s3.py" 
+  source_file = "${path.root}/src/sns2s3.py" 
   output_path = "sns2s3.zip"
 }
 
 data "archive_file" "s32rds" {  
   type = "zip"  
-  source_dir = "${path.root}/src/s32rds/" 
+  source_dir = "${path.root}/src" 
   output_path = "s32rds.zip"
 }
 
