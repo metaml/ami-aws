@@ -11,13 +11,35 @@
   outputs = { self, nixpkgs, flake-utils, flake-compat }:
     flake-utils.lib.eachDefaultSystem (system:
       let
+        name = "aip-lambda";
+        version = "0.1.0";
         pkgs = nixpkgs.legacyPackages.${system};
         python = pkgs.python311;
         python-pkgs = pkgs.python312Packages;
-        name = "aip-lambda";
-        version = "0.1.0";
         revision = "${self.lastModifiedDate}-${self.shortRev or "dirty"}";
       in {
+        packages.${name} = with import nixpkgs { inherit system; };
+          stdenv.mkDerivation {
+            __noChroot = true;
+            name = "${name}";
+            version = "${version}";
+            src = self;
+
+            buildInputs = with pkgs; [
+              python
+            ];
+
+            buildPhase = ''
+              export HOME=$TMP
+              mkdir -p $out/bin
+            '';
+            installPhase = ''
+              export HOME=$TMP
+            '';
+          };
+        packages.default = self.packages.${system}.${name};
+        defaultPackage = self.packages.${system}.default;
+        
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [
             awscli2
@@ -29,6 +51,7 @@
           shellHook = ''
             export LANG=en_US.UTF-8
             export SHELL=$BASH
+            export PYTHONPATH=$(pwd)/venv/lib:$PYTHONPATH
             export PS1="aip-aws|$PS1"
             python -m venv venv
             source venv/bin/activate

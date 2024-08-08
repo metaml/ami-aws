@@ -1,0 +1,4 @@
+asyncpg
+asyncpg-migrate
+boto3
+

@@ -1,28 +1,24 @@
+import asyncio
+import asyncpg
 import boto3
 import json
-import psycopg2
 import time
 
 def handler(event, context):
   u,p,h = credentials()
-  print(u)
-  print(h)  
-  write_db(u, p, h, event['Records'])
+  insert(u, p, h, event['Records'])
 
-def write_db(u, p, h, recs):
-  db = psycopg2.connect(f"dbname='aip' user={u} host={h} password={p}")
-  with db:
-    with db.cursor() as curs:
-      try: 
-        for rec in recs:
-          bucket = rec['s3']['bucket']['name']
-          key = rec['s3']['object']['key']
-          content = s3_object(bucket, key)
-          obj = json.loads(content)
-          line = obj['line']
-          curs.execute(f"insert into dialog (user_id, line) values ('michael.lee', '{line}')")
-      except (Exception, psycopg2.DatabaseError) as x:
-        print(x)
+def insert_db(u, p, h, recs):
+  asyncio.run(insert())
+  def async def insert):
+    try:
+      c = await asyncpg.connect(user=u, password=p, database='aip', host=h)
+      await c.execute('insert into dialog (user_id, line) values ($1, $2)',
+                      'michael.lee', line
+                     )
+      await conn.close()
+    except Exception as e:
+      print(e)
 
 def s3_object(bucket, key):
   s3 = boto3.resource('s3')
