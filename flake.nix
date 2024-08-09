@@ -30,8 +30,6 @@
             export LANG=en_US.UTF-8
             export SHELL=$BASH
             export PS1="aip-aws|$PS1"
-            python -m venv venv
-            source venv/bin/activate
           '';
         };
       }

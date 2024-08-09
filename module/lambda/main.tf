@@ -1,16 +1,8 @@
-data "archive_file" "sns2s3" {  
-  type = "zip"  
-  source_file = "${path.root}/src/sns2s3.py" 
-  output_path = "sns2s3.zip"
-}
-
-data "archive_file" "s32rds" {  
-  type = "zip"  
-  source_dir = "${path.root}/src" 
-  output_path = "s32rds.zip"
-}
-
 data "aws_caller_identity" "current" {}
+
+data "aws_ecr_repository" "aip-lambda" {
+  name = "aip-lambda"
+}
 
 data "aws_iam_policy_document" "assume_role" {
   statement {
@@ -47,19 +39,28 @@ resource "aws_iam_role_policy_attachment" "aip" {
 ### sns to s3
 
 resource "aws_lambda_function" "sns2s3" {
-  function_name    = "sns2s3"
-  filename         = "sns2s3.zip"
-  source_code_hash = data.archive_file.sns2s3.output_base64sha256
-  runtime          = "python3.11"  
-  handler          = "sns2s3.handler"  
-  timeout          = 900 # seconds
-  role             = aws_iam_role.aip.arn
+  function_name = "sns2s3"
+  image_uri     = data.aws_ecr_repository.aip-lambda.repository_url
+  package_type  = "Image"   
+  role          = aws_iam_role.aip.arn
+  timeout       = 900 # seconds
+  image_config {
+    entry_point = ["sns2s3.handler"]
+  }
+  environment {
+    variables = {
+      Name = "sns2s3"
+      Terraform = "true"
+      Environment = "production"
+      CreatedBy = "github:reomune/aip-aws"
+   }
+  }
 }
 
 resource "aws_lambda_permission" "sns2s3" {
   statement_id  = "AllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.sns2s3.function_name
+  function_name = "${aws_lambda_function.sns2s3.function_name}:latest"
   principal     = "sns.amazonaws.com"
   source_arn    = "arn:aws:sns:us-east-2:975050288432:aip"
 }
@@ -75,13 +76,22 @@ resource "aws_sns_topic_subscription" "sns2s3" {
 ### s3 to rds (postgresql)
 
 resource "aws_lambda_function" "s32rds" {
-  function_name    = "s32rds"
-  filename         = "s32rds.zip"
-  source_code_hash = data.archive_file.s32rds.output_base64sha256
-  runtime          = "python3.11"  
-  handler          = "s32rds.handler"  
-  timeout          = 900 # seconds
-  role             = aws_iam_role.aip.arn
+  function_name = "s32rds"
+  image_uri     = "${data.aws_ecr_repository.aip-lambda.repository_url}:latest"
+  package_type  = "Image"   
+  role          = aws_iam_role.aip.arn
+  timeout       = 900 # seconds
+  image_config {
+    entry_point = ["s32rds.handle"]
+  }
+  environment {
+    variables = {
+      Name = "s32rds"
+      Terraform = "true"
+      Environment = "production"
+      CreatedBy = "github:reomune/aip-aws"
+   }
+  }
 }
 
 resource "aws_lambda_permission" "s32rds" {
