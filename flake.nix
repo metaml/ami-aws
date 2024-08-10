@@ -23,6 +23,7 @@
             awscli2
             gawk
             gnumake
+            postgresql
             python
             terraform
           ];

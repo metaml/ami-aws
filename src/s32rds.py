@@ -6,19 +6,25 @@ import time
 
 def handler(event, context):
   u,p,h = credentials()
-  insert(u, p, h, event['Records'])
+  insert_dialog(u, p, h, event['Records'])
 
-def insert_db(u, p, h, recs):
-  asyncio.run(insert())
-  def async def insert):
+def insert_dialog(u, p, h, recs):
+  async def insert():
     try:
       c = await asyncpg.connect(user=u, password=p, database='aip', host=h)
-      await c.execute('insert into dialog (user_id, line) values ($1, $2)',
-                      'michael.lee', line
-                     )
-      await conn.close()
+      for rec in recs:
+        bucket = rec['s3']['bucket']['name']
+        key = rec['s3']['object']['key']
+        content = s3_object(bucket, key)
+        obj = json.loads(content)
+        line = obj['line']
+        await c.execute('insert into dialog (user_id, line) values ($1, $2)',
+                        'michael.lee',
+                        line)
+      await c.close()
     except Exception as e:
       print(e)
+  asyncio.run(insert())
 
 def s3_object(bucket, key):
   s3 = boto3.resource('s3')

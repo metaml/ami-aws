@@ -26,11 +26,21 @@ dev: ## nix develop
 image: ## create a docker image for aws lambda
 	cd src && make image
 
-image-push: ## create a docker image for aws lambda
+image-update: image ## create a docker image for aws lambda
 	docker tag aip-lambda:latest $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/aip-lambda:latest
 	aws ecr get-login-password --region $(REGION) \
         | docker login --username AWS --password-stdin $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com
 	docker push $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/aip-lambda:latest
+
+lambda-update: image-update ## update lambda after image-push
+	aws lambda update-function-code \
+	--function-name=sns2s3 \
+	--image-uri=$(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/aip-lambda:latest
+
+	aws lambda update-function-code \
+	--function-name=s32rds \
+	--image-uri=$(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/aip-lambda:latest
+
 
 clean: ## clean
 	find . -name \*~ | xargs rm -f
@@ -53,3 +63,8 @@ sns-publish: ## publish a message to the aip sns-topic
 	--topic-arn "arn:aws:sns:us-east-2:975050288432:aip" \
 	--message file://etc/msg.json
 
+rds-db: export PGUSER = $(shell aws secretsmanager get-secret-value --secret-id=db-user|awk '{print $$4}')
+rds-db: export PGPASSWORD = $(shell aws secretsmanager get-secret-value --secret-id=db-password|awk '{print $$4}')
+rds-db: export PGHOST = aip.c7eaoykysgcc.us-east-2.rds.amazonaws.com
+rds-db: ## connect to the postgresql instance
+	psql aip
