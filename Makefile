@@ -48,7 +48,7 @@ login-aws: ## login to aws to fetch/refresh token
 
 terraform-update:; terraform init
 
-publish-sns: ## publish a message to the aip sns-topic
+sns-publish: ## publish a message to the aip sns-topic
 	aws sns publish \
 	--topic-arn "arn:aws:sns:us-east-2:975050288432:aip" \
 	--message file://etc/msg.json

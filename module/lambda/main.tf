@@ -45,7 +45,7 @@ resource "aws_lambda_function" "sns2s3" {
   role          = aws_iam_role.aip.arn
   timeout       = 900 # seconds
   image_config {
-    entry_point = ["sns2s3.handler"]
+    command = ["sns2s3.handler"]
   }
   environment {
     variables = {
@@ -82,7 +82,7 @@ resource "aws_lambda_function" "s32rds" {
   role          = aws_iam_role.aip.arn
   timeout       = 900 # seconds
   image_config {
-    entry_point = ["s32rds.handler"]
+    command = ["s32rds.handler"]
   }
   environment {
     variables = {
