@@ -40,7 +40,7 @@ resource "aws_iam_role_policy_attachment" "aip" {
 
 resource "aws_lambda_function" "sns2s3" {
   function_name = "sns2s3"
-  image_uri     = data.aws_ecr_repository.aip-lambda.repository_url
+  image_uri     = "${data.aws_ecr_repository.aip-lambda.repository_url}:latest"
   package_type  = "Image"   
   role          = aws_iam_role.aip.arn
   timeout       = 900 # seconds
@@ -60,7 +60,7 @@ resource "aws_lambda_function" "sns2s3" {
 resource "aws_lambda_permission" "sns2s3" {
   statement_id  = "AllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.sns2s3.function_name}:latest"
+  function_name = aws_lambda_function.sns2s3.function_name
   principal     = "sns.amazonaws.com"
   source_arn    = "arn:aws:sns:us-east-2:975050288432:aip"
 }
