@@ -82,7 +82,7 @@ resource "aws_lambda_function" "s32rds" {
   role          = aws_iam_role.aip.arn
   timeout       = 900 # seconds
   image_config {
-    entry_point = ["s32rds.handle"]
+    entry_point = ["s32rds.handler"]
   }
   environment {
     variables = {
