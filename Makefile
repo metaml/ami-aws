@@ -68,3 +68,7 @@ rds-db: export PGPASSWORD = $(shell aws secretsmanager get-secret-value --secret
 rds-db: export PGHOST = aip.c7eaoykysgcc.us-east-2.rds.amazonaws.com
 rds-db: ## connect to the postgresql instance
 	psql aip
+
+sqitch-init: ## initialize sqitch
+	mkdir -p schema
+	cd schema && sqitch init aip --uri https://github.com/sqitchers/sqitch-intro/ --engine pg
