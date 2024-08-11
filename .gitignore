@@ -1,4 +1,5 @@
 *~
+**/.creds
 *.zip
 # Local .terraform directories
 **/.terraform/*

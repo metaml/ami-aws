@@ -71,4 +71,4 @@ rds-db: ## connect to the postgresql instance
 
 sqitch-init: ## initialize sqitch
 	mkdir -p schema
-	cd schema && sqitch init aip --uri https://github.com/sqitchers/sqitch-intro/ --engine pg
+	cd schema && make init

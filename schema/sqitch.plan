@@ -2,3 +2,5 @@
 %project=aip
 %uri=https://github.com/sqitchers/sqitch-intro/
 
+schema 2024-08-10T22:42:51Z Mike <ml@go.local> # schema for aips
+conversation [schema] 2024-08-11T00:08:00Z Mike <ml@go.local> # "add conversation"
