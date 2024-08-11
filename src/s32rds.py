@@ -41,9 +41,8 @@ def credentials():
   return u['SecretString'], p['SecretString'], "aip.c7eaoykysgcc.us-east-2.rds.amazonaws.com"
 
 def user(sec):
-  u = sec.get_secret_value(SecretId='db-user')
+  return sec.get_secret_value(SecretId='db-user')
   return u
 
 def passwd(sec):    
-  p = sec.get_secret_value(SecretId='db-password')
-  return p
+  return sec.get_secret_value(SecretId='db-password')
