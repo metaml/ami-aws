@@ -18,8 +18,11 @@ def insert_dialog(u, p, h, recs):
         content = s3_object(bucket, key)
         obj = json.loads(content)
         line = obj['line']
-        await c.execute('insert into dialog (user_id, line) values ($1, $2)',
+        await c.execute('insert into conversation (member_id, friend_id, friend_type, speaker_type, line) values ($1, $2, $3, $4, $5)',
+                        'john.smith',
                         'michael.lee',
+                        'human',
+                        'member',
                         line)
       await c.close()
     except Exception as e:
