@@ -10,8 +10,8 @@ BEGIN;
 	 friend_type friend_enum not null,
 	 speaker_type speaker_enum not null,	 	 
 	 line text not null,
+	 message jsonb not null default '{}'::jsonb,
 	 created_at timestamptz not null default now()
 	 );
 	 
 COMMIT;
-	

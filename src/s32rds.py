@@ -16,17 +16,19 @@ def insert_dialog(u, p, h, recs):
         bucket = rec['s3']['bucket']['name']
         key = rec['s3']['object']['key']
         content = s3_object(bucket, key)
-        obj = json.loads(content)
-        line = obj['line']
-        await c.execute('insert into conversation (member_id, friend_id, friend_type, speaker_type, line) values ($1, $2, $3, $4, $5)',
+        msg = json.loads(content)
+        line = msg['content']
+        await c.execute('insert into conversation (member_id, friend_id, friend_type, speaker_type, line, message) values ($1, $2, $3, $4, $5, $6)',
                         'john.smith',
                         'michael.lee',
                         'human',
                         'member',
-                        line)
+                        line,
+                        json.dumps(msg)
+                       )
       await c.close()
     except Exception as e:
-      print(e)
+      print("exception:", e)
   asyncio.run(insert())
 
 def s3_object(bucket, key):

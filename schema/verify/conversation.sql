@@ -1,4 +1,4 @@
--- Verify aip:conversatation on pg
+-- Verify aip:conversation on pg
 
 BEGIN;
 

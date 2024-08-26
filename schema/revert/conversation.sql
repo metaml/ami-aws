@@ -1,4 +1,4 @@
--- Revert aip:conversatation from pg
+-- Revert aip:conversation from pg
 
 BEGIN;
 
