@@ -10,6 +10,14 @@ data "aws_secretsmanager_secret_version" "db-password" {
   secret_id = data.aws_secretsmanager_secret.db-password.id
 }
 
+data "aws_secretsmanager_secret" "db-user" {
+  name = "db-user"
+}
+
+data "aws_secretsmanager_secret_version" "db-user" {
+  secret_id = data.aws_secretsmanager_secret.db-user.id
+}
+
 resource "random_string" "password" {
   length  = 64
   upper   = true
@@ -25,7 +33,7 @@ resource "aws_security_group" "rds" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["50.68.120.205/32"]
   }
 }
 
@@ -62,7 +70,7 @@ resource "aws_db_instance" "aip" {
   engine_version         = "16.3"
   publicly_accessible    = true
   vpc_security_group_ids = [aws_security_group.rds.id]
-  username               = "aip"
+  username               = data.aws_secretsmanager_secret_version.db-user.secret_string
   password               = data.aws_secretsmanager_secret_version.db-password.secret_string
   skip_final_snapshot    = true
 
