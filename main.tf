@@ -29,3 +29,7 @@ module "secret" {
 module "sns" {
   source = "./module/sns"
 }
+
+module "tls" {
+  source = "./module/tls"
+}
