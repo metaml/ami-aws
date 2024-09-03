@@ -4,3 +4,4 @@
 
 schema 2024-08-10T22:42:51Z Mike <ml@go.local> # schema for aips
 conversation [schema] 2024-08-26T09:23:51Z Mike <ml@go.local> # "add conversation"
+member [schema] 2024-08-31T08:11:08Z Mike <ml@go.local> # "add member"

@@ -1,16 +1,16 @@
 .DEFAULT_GOAL = help
 
-sq-add: NB ?= "add ${OBJ}"
-sq-add: ## add a sqitch file: $OBJ required, $NB optional
+sq-file: NB ?= "add ${OBJ}"
+sq-file: ## add a sqitch file: $OBJ required, $NB optional
 	sqitch add ${OBJ} --requires schema --note '${NB}'
 
-sq-update: ## modify db schema
+update: ## modify db schema
 	source ./.creds && sqitch deploy db:pg:aip
 
-sq-verify: ## verify db schema
+verify: ## verify db schema
 	source ./.creds && sqitch verify db:pg:aip
 
-sq-schema: ## init sqitch schema
+schema: ## init sqitch schema
 	sqitch add schema -n 'schema for aips'
 
 init: ## init sqitch
@@ -36,3 +36,5 @@ clean: ## clean
 help: ## help
 	@grep -E '^[a-zA-Z00-9_%-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 	| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-18s\033[0m %s\n", $$1, $$2}'
+
+.PHONY: verify

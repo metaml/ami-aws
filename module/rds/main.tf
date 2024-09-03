@@ -2,6 +2,14 @@ data "aws_vpc" "default" {
   default = true
 }
 
+data "aws_secretsmanager_secret" "db-password" {
+  name = "db-password"
+}
+
+data "aws_secretsmanager_secret_version" "db-password" {
+  secret_id = data.aws_secretsmanager_secret.db-password.id
+}
+
 resource "random_string" "password" {
   length  = 64
   upper   = true
@@ -9,10 +17,10 @@ resource "random_string" "password" {
   special = false
 }
 
-resource "aws_security_group" "aip" {
+resource "aws_security_group" "rds" {
   vpc_id      = "${data.aws_vpc.default.id}"
   name        = "aip"
-  description = "Allow all inbound for Postgres"
+  description = "allow all inbound for Postgres"
   ingress {
     from_port   = 5432
     to_port     = 5432
@@ -53,9 +61,9 @@ resource "aws_db_instance" "aip" {
   engine                 = "postgres"
   engine_version         = "16.3"
   publicly_accessible    = true
-  vpc_security_group_ids = [aws_security_group.aip.id]
+  vpc_security_group_ids = [aws_security_group.rds.id]
   username               = "aip"
-  password               = "***CHANGE-ME***"
+  password               = data.aws_secretsmanager_secret_version.db-password.secret_string
   skip_final_snapshot    = true
 
   monitoring_interval = 60 # Interval in seconds (minimum 60 seconds)
