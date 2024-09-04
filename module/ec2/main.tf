@@ -1,5 +1,5 @@
 data "aws_vpc" "default" {default = true}
-
+data "aws_subnet" "default" {id = "subnet-05413c6d31d066a8c"}
 data "aws_key_pair" "key-pair" {key_name = "key-pair"}
 
 data "aws_secretsmanager_secret" "key-public" {name = "key-public"}
@@ -43,6 +43,7 @@ resource "aws_instance" "aip-rest" {
   ami                         = "ami-0f381b685ecd8406c"
   instance_type               = "t2.small"
   key_name                    = "key-pair"
+  subnet_id                   = data.aws_subnet.default.id
   security_groups             = [aws_security_group.aip-rest.name]
   associate_public_ip_address = true
   
