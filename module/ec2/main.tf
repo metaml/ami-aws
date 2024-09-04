@@ -17,11 +17,15 @@ resource "aws_network_interface" "aip-rest" {
 
 resource "aws_instance" "aip-rest" {
   ami                         = "ami-0f381b685ecd8406c"
-  instance_type               = "t2.medium"
+  instance_type               = "t3.medium"
   key_name                    = "key-pair"
   subnet_id                   = data.aws_subnet.default.id
   security_groups             = [data.aws_security_group.aip-rest.id]
   associate_public_ip_address = true
+
+  root_block_device {
+    volume_size = 32
+  }
   
   tags = {
     Name = "aip-rest"
