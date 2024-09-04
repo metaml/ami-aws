@@ -37,3 +37,7 @@ module "sns" {
 module "tls" {
   source = "./module/tls"
 }
+
+module "vpc" {
+  source = "./module/vpc"
+}
