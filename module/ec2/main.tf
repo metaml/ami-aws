@@ -1,9 +1,8 @@
 data "aws_vpc" "default" {default = true}
 
-data "aws_secretsmanager_secret" "key-public" {
-  name = "key-public"
-}
+data "aws_key_pair" "key-pair" {key_name = "key-pair"}
 
+data "aws_secretsmanager_secret" "key-public" {name = "key-public"}
 data "aws_secretsmanager_secret_version" "key-public" {
   secret_id = data.aws_secretsmanager_secret.key-public.id
 }
@@ -50,4 +49,6 @@ resource "aws_instance" "aip-rest" {
   tags = {
     Name = "aip-rest"
   }
+
+  depends_on = [data.aws_key_pair.key-pair]
 }
