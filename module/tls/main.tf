@@ -18,6 +18,16 @@ resource "aws_secretsmanager_secret_version" "key-private" {
   secret_string = tls_private_key.key.private_key_pem
 }
 
+resource "aws_secretsmanager_secret" "key-private-openssh" {
+  name = "key-private-openssh"
+  description = "private openssh ssh key"
+}
+
+resource "aws_secretsmanager_secret_version" "key-private-openssh" {
+  secret_id     = aws_secretsmanager_secret.key-private-openssh.id
+  secret_string = tls_private_key.key.private_key_openssh
+}
+
 # public key
 resource "aws_secretsmanager_secret" "key-public" {
   name = "key-public"
@@ -39,7 +49,6 @@ resource "aws_secretsmanager_secret_version" "key-public-fingerprint-md5" {
   secret_id     = aws_secretsmanager_secret.key-public-fingerprint-md5.id
   secret_string = tls_private_key.key.public_key_fingerprint_md5
 }
-
 
 # public key fingerprint sha256
 resource "aws_secretsmanager_secret" "key-public-fingerprint-sha256" {

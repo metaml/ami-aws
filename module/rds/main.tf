@@ -26,7 +26,7 @@ resource "random_string" "password" {
 }
 
 resource "aws_security_group" "rds" {
-  vpc_id      = "${data.aws_vpc.default.id}"
+  vpc_id      = data.aws_vpc.default.id
   name        = "aip"
   description = "allow all inbound for Postgres"
   ingress {

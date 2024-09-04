@@ -58,6 +58,9 @@ login-aws: ## login to aws to fetch/refresh token
 
 terraform-update:; terraform init
 
+ssh-ec2-private-key: ## copy private key from secretsmanager to ~/.ssh
+	aws secretsmanager get-secret-value --secret-id=key-private-openssh --query=SecretString > ~/.ssh/ec2.pem
+
 sns-publish: ## publish a message to the aip sns-topic
 	aws sns publish \
 	--topic-arn "arn:aws:sns:us-east-2:975050288432:aip" \

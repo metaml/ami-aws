@@ -6,6 +6,10 @@ module "bucket" {
   source = "./module/bucket"
 }
 
+module "ec2" {
+  source = "./module/ec2"
+}
+
 module "ecr" {
   source = "./module/ecr"
 }
