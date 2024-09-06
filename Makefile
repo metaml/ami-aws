@@ -12,6 +12,9 @@ plan: ## terraform plan
 apply: ## terraform apply
 	terraform apply
 
+apply-approve: ## terraform apply --auto-approve
+	terraform apply --auto-approve
+
 update: ## update/init terraform modules
 	terraform init
 
