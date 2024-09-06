@@ -96,6 +96,7 @@ resource "aws_iam_policy" "ec2" {
 	  "rds:AmazonRDSFullAccess",
 	  "s3:AmazonS3FullAccess",
 	  "s3:ListAllMyBuckets",
+	  "secretsmanager:GetSecretValue",	  
 	  "secretsmanager:ReadWrite",
 	  "sns:AmazonSNSFullAccess"
         ]
