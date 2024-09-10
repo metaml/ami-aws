@@ -1,7 +1,7 @@
 .DEFAULT_GOAL = help
 
-sq-file: NB ?= "add ${OBJ}"
-sq-file: ## add a sqitch file: $OBJ required, $NB optional
+add: NB ?= "add ${OBJ}"
+add: ## add a sqitch file: $OBJ required, $NB optional
 	sqitch add ${OBJ} --requires schema --note '${NB}'
 
 update: ## modify db schema
@@ -10,14 +10,14 @@ update: ## modify db schema
 verify: ## verify db schema
 	source ./.creds && sqitch verify db:pg:aip
 
-schema: ## init sqitch schema
+schema: ## init sqitch schema (second)
 	sqitch add schema -n 'schema for aips'
 
-init: ## init sqitch
-	cd schema && sqitch init aip --uri https://github.com/sqitchers/sqitch-intro/ --engine pg
+init: ## init sqitch (first)
+	sqitch init aip --uri https://github.com/sqitchers/sqitch-intro/ --engine pg
 
-db-create: ## create db
-	source ./.creds && createdb aip
+db-create: ## create db (third)
+	source ./.creds && createdb --encoding=UTF8 --locale=en_US.UTF-8 aip
 
 db-creds: export PGUSER = $(shell aws secretsmanager get-secret-value --secret-id=db-user|awk '{print $$4}')
 db-creds: export PGPASSWORD = $(shell aws secretsmanager get-secret-value --secret-id=db-password|awk '{print $$4}')
@@ -26,7 +26,7 @@ db-creds: ## save db crendentials
 	@cp /dev/null .creds \
 	&& echo "export PGUSER=$(PGUSER)" >> .creds  \
 	&& echo "export PGPASSWORD=$(PGPASSWORD)" >> .creds \
-	&& echo "export PGHOST=$(PGHOST)" >> .creds 
+	&& echo "export PGHOST=$(PGHOST)" >> .creds
 	@echo ".creds created"
 
 clean: ## clean

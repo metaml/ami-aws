@@ -1,4 +1,7 @@
+-- Revert aip:schema from pg
+
 BEGIN;
-  drop schema aip;
+
+-- XXX Add DDLs here.
 
 COMMIT;
