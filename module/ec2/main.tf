@@ -106,6 +106,7 @@ resource "aws_iam_policy" "ec2" {
         Action = [
 	  "ecr:*",
 	  "iam:ReadOnlyAccess",
+	  "lambda:UpdateFunctionCode",
 	  "rds:AmazonRDSFullAccess",
 	  "s3:AmazonS3FullAccess",
 	  "s3:ListAllMyBuckets",

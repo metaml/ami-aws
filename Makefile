@@ -78,3 +78,13 @@ rds-db: ## connect to the postgresql instance
 sqitch-init: ## initialize sqitch
 	mkdir -p schema
 	cd schema && make init
+
+rsync: HOST = ec2-3-136-167-53.us-east-2.compute.amazonaws.com
+rsync: ## rsync aip to ec2 instance
+	rsync --verbose \
+	--archive \
+	--compress \
+	--progress \
+	--rsh='ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' \
+	. ec2-3-136-167-53.us-east-2.compute.amazonaws.com:ami-aws
+	ssh ami 'cd ami-aws && chown -R root .'
