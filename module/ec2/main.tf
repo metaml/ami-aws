@@ -19,11 +19,23 @@ resource "aws_instance" "ec2" {
   instance_type               = "t3.medium"
   key_name                    = "key-pair"
   subnet_id                   = data.aws_subnet.default.id
-  security_groups             = [data.aws_security_group.aip-rest.id]
+  # NB: -  don't use security_groups, it will destroy your instance
+  #        on every terraform apply
+  #     - use vpc_security_group_ids instead
+  # security_groups             = [data.aws_security_group.aip-rest.id]
+  vpc_security_group_ids      = [data.aws_security_group.aip-rest.id]
   associate_public_ip_address = true
   root_block_device {
-    volume_size = 32
-    encrypted = false
+    volume_size           = 32
+    encrypted             = true
+    delete_on_termination = false
+  }
+  lifecycle {
+    ignore_changes = [
+      volume_tags,
+      user_data,
+      user_data_base64
+    ]
   }
   user_data            = file("${path.module}/configuration.nix.sh")
   iam_instance_profile = aws_iam_instance_profile.ec2.name
@@ -92,7 +104,7 @@ resource "aws_iam_policy" "ec2" {
       {
         Effect = "Allow"
         Action = [
-	  "ec3:*",
+	  "ecr:*",
 	  "iam:ReadOnlyAccess",
 	  "rds:AmazonRDSFullAccess",
 	  "s3:AmazonS3FullAccess",
