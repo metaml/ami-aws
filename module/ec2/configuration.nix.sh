@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-mv /etc/nixos/configuration.nix /etc/nixos/configuration.nix-
+mv -f /etc/nixos/configuration.nix /etc/nixos/configuration.nix-
 
 cat > /etc/nixos/configuration.nix <<EOF
 { modulesPath, pkgs, ... }: {
@@ -24,6 +24,7 @@ cat > /etc/nixos/configuration.nix <<EOF
     coreutils
     dateutils
     dig
+    docker
     emacs
     fetchutils
     findutils
@@ -40,12 +41,23 @@ cat > /etc/nixos/configuration.nix <<EOF
     unzip
     vim
     zip
-    zlib.dev    
+    zlib.dev
   ];
+
+  systemd.services.dockerd = {
+    enable = true;
+    description   = "dockerd";
+    unitConfig    = { Type = "simple"; };
+    wantedBy      = [ "multi-user.target" ];
+    serviceConfig = {
+      ExecStart  = "\${pkgs.docker}/bin/dockerd";
+      Restart    = "always";
+      RestartSed = 1;
+    };
+  };
 }
 EOF
 
 nixos-rebuild switch
 nix-channel --update
 nix-collect-garbage --delete-old
-

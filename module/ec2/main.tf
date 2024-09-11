@@ -58,7 +58,7 @@ resource "aws_iam_role" "ec2" {
 	    "ec2.amazonaws.com",
 	    "iam.amazonaws.com",
 	    "ssm.amazonaws.com",
-	    "sso.amazonaws.com"	    
+	    "sso.amazonaws.com"
 	  ]
         }
         Action = "sts:AssumeRole"
@@ -92,11 +92,12 @@ resource "aws_iam_policy" "ec2" {
       {
         Effect = "Allow"
         Action = [
+	  "ec3:*",
 	  "iam:ReadOnlyAccess",
 	  "rds:AmazonRDSFullAccess",
 	  "s3:AmazonS3FullAccess",
 	  "s3:ListAllMyBuckets",
-	  "secretsmanager:GetSecretValue",	  
+	  "secretsmanager:GetSecretValue",
 	  "secretsmanager:ReadWrite",
 	  "sns:AmazonSNSFullAccess"
         ]
@@ -193,4 +194,3 @@ resource "aws_iam_policy" "ec2" {
 #     ]
 #   })
 # }
-
