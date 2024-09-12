@@ -2,6 +2,10 @@ provider "aws" {
   region = "us-east-2"
 }
 
+module "alb" {
+  source = "./module/alb"
+}
+
 module "bucket" {
   source = "./module/bucket"
 }

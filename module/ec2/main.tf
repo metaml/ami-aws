@@ -41,7 +41,7 @@ resource "aws_instance" "ec2" {
   iam_instance_profile = aws_iam_instance_profile.ec2.name
   depends_on           = [data.aws_key_pair.key-pair]
   tags = {
-    name = "aip-rest"
+    name = "ami-0"
   }
 }
 

@@ -12,11 +12,11 @@ resource "aws_security_group" "aip-rest" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = ["50.68.120.205/32", data.aws_vpc.default.cidr_block]
+    cidr_blocks = ["0.0.0.0/0", data.aws_vpc.default.cidr_block] #["50.68.120.205/32", data.aws_vpc.default.cidr_block]
   }
   ingress {
-    from_port = 443
-    to_port = 443
+    from_port = 8000
+    to_port = 8000
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0", data.aws_vpc.default.cidr_block]
   }
