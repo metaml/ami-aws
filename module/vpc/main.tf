@@ -53,5 +53,3 @@ resource "aws_route_table_association" "default-c" {
   subnet_id      = data.aws_subnet.default-c.id
   route_table_id = aws_route_table.aip.id
 }
-
-

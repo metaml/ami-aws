@@ -107,12 +107,12 @@ resource "aws_iam_policy" "ec2" {
 	  "ecr:*",
 	  "iam:ReadOnlyAccess",
 	  "lambda:UpdateFunctionCode",
-	  "rds:AmazonRDSFullAccess",
-	  "s3:AmazonS3FullAccess",
+	  "rds:FullAccess",
+	  "s3:FullAccess",
 	  "s3:ListAllMyBuckets",
 	  "secretsmanager:GetSecretValue",
 	  "secretsmanager:ReadWrite",
-	  "sns:AmazonSNSFullAccess"
+	  "sns:ListTopics"
         ]
         Resource = "*"
       },

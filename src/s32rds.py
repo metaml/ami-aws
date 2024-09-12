@@ -5,7 +5,9 @@ import json
 import time
 
 def handler(event, context):
+  print(f"in s32rds handler, event={event}")
   u,p,h = credentials()
+  print(f"in s32rds handler, got credential")
   insert_dialog(u, p, h, event['Records'])
 
 def insert_dialog(u, p, h, recs):

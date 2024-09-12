@@ -37,20 +37,20 @@ image-update: image ## create a docker image for aws lambda
 
 lambda-update: image-update ## update lambda after image-push
 	aws lambda update-function-code \
+	--no-cli-pager \
 	--function-name=sns2s3 \
 	--image-uri=$(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/aip-lambda:latest
-
 	aws lambda update-function-code \
+	--no-cli-pager \
 	--function-name=s32rds \
 	--image-uri=$(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/aip-lambda:latest
-
 
 clean: ## clean
 	find . -name \*~ | xargs rm -f
 	rm -f *.zip
 
 clean-prune: ## docker system prune
-	docker system prune --all
+	docker system prune --all --volumes
 
 help: ## help
 	@grep -E '^[a-zA-Z00-9_%-]+:.*?## .*$$' $(MAKEFILE_LIST) \
