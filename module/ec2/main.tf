@@ -1,6 +1,5 @@
 data "aws_vpc" "default" { default = true }
 data "aws_subnet" "default" { id = "subnet-05413c6d31d066a8c" }
-data "aws_security_group" "aip-rest" { name = "aip-rest" }
 data "aws_key_pair" "key-pair" { key_name = "key-pair" }
 data "aws_secretsmanager_secret" "key-public" { name = "key-public" }
 data "aws_secretsmanager_secret_version" "key-public" { secret_id = data.aws_secretsmanager_secret.key-public.id }
@@ -8,8 +7,32 @@ data "aws_secretsmanager_secret" "key-private" { name = "key-private" }
 data "aws_secretsmanager_secret_version" "key-private" { secret_id = data.aws_secretsmanager_secret.key-private.id }
 
 resource "aws_network_interface" "aip" {
-  subnet_id = data.aws_subnet.default.id
-  security_groups = [data.aws_security_group.aip-rest.id]
+  subnet_id       = data.aws_subnet.default.id
+  security_groups = [ aws_security_group.ec2.id ]
+}
+
+resource "aws_security_group" "ec2" {
+  name = "ec2"
+  description = "aip-rest (ec2) security group"
+  vpc_id = data.aws_vpc.default.id
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = [ "50.68.120.205/32", data.aws_vpc.default.cidr_block ]
+  }
+  ingress {
+    from_port = 8000
+    to_port = 8000
+    protocol = "tcp"
+    cidr_blocks = [ "50.68.120.205/32", data.aws_vpc.default.cidr_block ]
+  }
+  egress {
+   from_port = 0
+   to_port = 0
+   protocol = "-1"
+   cidr_blocks = [ "0.0.0.0/0" ]
+  }
 }
 
 # ami-0f381b685ecd8406c nixos
@@ -23,7 +46,7 @@ resource "aws_instance" "ec2" {
   #        on every terraform apply
   #     - use vpc_security_group_ids instead
   # security_groups             = [data.aws_security_group.aip-rest.id]
-  vpc_security_group_ids      = [data.aws_security_group.aip-rest.id]
+  vpc_security_group_ids      = [ aws_security_group.ec2.id ]
   associate_public_ip_address = true
   root_block_device {
     volume_size           = 32
@@ -33,8 +56,6 @@ resource "aws_instance" "ec2" {
   lifecycle {
     ignore_changes = [
       volume_tags,
-      user_data,
-      user_data_base64
     ]
   }
   user_data            = file("${path.module}/configuration.nix.sh")

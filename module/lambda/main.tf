@@ -3,7 +3,6 @@ data "aws_internet_gateway" "default" {internet_gateway_id = "igw-01f3d9294d50a2
 data "aws_subnet" "default-a" {id = "subnet-05413c6d31d066a8c"}
 data "aws_subnet" "default-b" {id = "subnet-09b373b677dc9a809"}
 data "aws_subnet" "default-c" {id = "subnet-01536c0d51454e3ad"}
-data "aws_security_group" "aip-rest" { name = "aip-rest" }
 data "aws_caller_identity" "current" {}
 data "aws_ecr_repository" "aip-lambda" { name = "aip-lambda" }
 data "aws_iam_policy_document" "assume_role" {

@@ -29,11 +29,13 @@ dev: ## nix develop
 image: ## create a docker image for aws lambda
 	cd src && make image
 
-image-update: image ## create a docker image for aws lambda
+image-update: image docker-login ## create a docker image for aws lambda
 	docker tag aip-lambda:latest $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/aip-lambda:latest
-	aws ecr get-login-password --region $(REGION) \
-        | docker login --username AWS --password-stdin $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com
 	docker push $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/aip-lambda:latest
+
+docker-login: ## docker login
+	aws ecr get-login-password --region $(REGION) \
+	| docker login --username AWS --password-stdin $(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com
 
 lambda-update: image-update ## update lambda after image-push
 	aws lambda update-function-code \
