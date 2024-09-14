@@ -15,6 +15,12 @@ cat > /etc/nixos/configuration.nix <<EOF
       { from = 8000; to = 8010; }
     ];
   };
+  # 1. allow return traffic for outgoing connections initiated by the server itself
+  # 2. allow outgoing traffic of all established connections
+  networking.firewall.extraStopCommands = ''
+    iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT || true
+    iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT        || true
+  '';
   nixpkgs.config = {
     allowUnfree = true; # Allow "unfree" packages.
     # firefox.enableAdobeFlash = true;
@@ -62,13 +68,15 @@ cat > /etc/nixos/configuration.nix <<EOF
     description   = "dockerd";
   };
 
-  systemd.services."ami-rest" = {
+  systemd.services."ami" = {
     description = "ami rest service";
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
-      KillMode   = "mixed";
-      Restart    = "always";
-      ExecStart  = "/ami/ami.py";
+      ExecStartPre = "cd /ami && nix install";
+      ExecStart    = "cd / && ami.py";
+      KillMode     = "mixed";
+      Restart      = "always";
+      RestartSec   = 5;
     };
   };
 }

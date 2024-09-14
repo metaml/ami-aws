@@ -133,7 +133,7 @@ resource "aws_iam_policy" "ec2" {
 	  "s3:ListAllMyBuckets",
 	  "secretsmanager:GetSecretValue",
 	  "secretsmanager:ReadWrite",
-	  "sns:ListTopics"
+	  "sns:FullAccess"
         ]
         Resource = "*"
       },

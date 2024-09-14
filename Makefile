@@ -86,6 +86,7 @@ rsync: ## rsync aip to ec2 instance
 	rsync --verbose \
 	--archive \
 	--compress \
+	--delete \
 	--progress \
 	--rsh='ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' \
 	. ec2-3-136-167-53.us-east-2.compute.amazonaws.com:ami-aws
