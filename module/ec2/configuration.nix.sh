@@ -51,22 +51,6 @@ cat > /etc/nixos/configuration.nix <<EOF
     zlib.dev
   ];
 
-  # this works
-  # users.users.root.packages = [
-  #   pkgs.python311
-  #   pkgs.python311Packages.asyncpg
-  #   pkgs.python311Packages.boto3
-  #   pkgs.python311Packages.environs
-  #   pkgs.python311Packages.fastapi
-  #   pkgs.python311Packages.gradio
-  #   #pkgs.python311Packages.jinja2
-  #   pkgs.python311Packages.openai
-  #   pkgs.python311Packages.passlib
-  #   pkgs.python311Packages.pydantic-core
-  #   pkgs.python311Packages.pyjwt
-  #   pkgs.python311Packages.uvicorn
-  # ];
-
   systemd.services.dockerd = {
     enable = true;
     wantedBy      = [ "multi-user.target" ];
@@ -82,21 +66,9 @@ cat > /etc/nixos/configuration.nix <<EOF
     description = "ami rest service";
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
-      KillMode = "mixed";
-      Restart = "always";
-
-      ExecStartPre = "[ -d /static ] || cd / \
-&& aws s3 \
-cp s3://ami-recomune-us-east2/static.tar.gz && \
-tar xzf static.tar.gz";
-
-      ExecStart = "docker run \
---env AWS_DEFAULT_REGIONS=us-east-2 \
---read-only \
---volume /static:/static \
---workdir / \
---publish 8000:8000 \
- 975050288432.dkr.ecr.us-east-2.amazonaws.com/ami-rest";
+      KillMode   = "mixed";
+      Restart    = "always";
+      ExecStart  = "/ami/ami.py";
     };
   };
 }
