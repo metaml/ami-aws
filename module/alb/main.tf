@@ -18,6 +18,12 @@ resource "aws_security_group" "http" {
     protocol    = "tcp"
     cidr_blocks = [ "50.68.120.205/32", data.aws_vpc.default.cidr_block ]
   }
+  ingress {
+    from_port   = 8000
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = [ "50.68.120.205/32", data.aws_vpc.default.cidr_block ]
+  }
   egress {
     from_port   = 0
     to_port     = 0
@@ -46,6 +52,16 @@ resource "aws_lb" "alb" {
 resource "aws_lb_listener" "listener" {
   load_balancer_arn = aws_lb.alb.arn
   port              = 80
+  protocol          = "HTTP"
+  default_action {
+    target_group_arn = aws_lb_target_group.ami.arn
+    type             = "forward"
+  }
+}
+
+resource "aws_lb_listener" "listener-8000" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = 8000
   protocol          = "HTTP"
   default_action {
     target_group_arn = aws_lb_target_group.ami.arn

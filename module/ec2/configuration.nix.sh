@@ -31,7 +31,6 @@ cat > /etc/nixos/configuration.nix <<EOF
 
   environment.variables = { AWS_DEFAULT_REGION = "us-east-2"; };
   environment.systemPackages = with pkgs; [
-    git
     awscli2
     bashInteractive
     coreutils
@@ -42,6 +41,7 @@ cat > /etc/nixos/configuration.nix <<EOF
     fetchutils
     findutils
     gawk
+    git
     gnugrep
     gnumake
     gnused
@@ -72,11 +72,13 @@ cat > /etc/nixos/configuration.nix <<EOF
     description = "ami rest service";
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
-      ExecStartPre = "cd /ami && nix install";
-      ExecStart    = "cd / && ami.py";
+      ExecStart    = "/root/.nix-profile/bin/ami.py";
       KillMode     = "mixed";
       Restart      = "always";
-      RestartSec   = 5;
+      RestartSec   = 8;
+      StandardError  = "journal";
+      StandardOutput = "journal";
+      StandardInput  = "null";
     };
   };
 }
