@@ -5,3 +5,4 @@
 schema 2024-09-10T23:25:09Z Mike <ml@go.local> # schema for aips
 conversation [schema] 2024-09-10T23:30:38Z Mike <ml@go.local> # "add conversation"
 member [schema] 2024-09-10T23:31:50Z Mike <ml@go.local> # "add member"
+prompt [schema] 2024-09-17T22:59:26Z Mike <ml@go.local> # "add prompt"

@@ -33,7 +33,7 @@ resource "aws_security_group" "rds" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = [ "50.68.120.205/32",  data.aws_vpc.default.cidr_block ]
+    cidr_blocks = [ "50.68.120.205/32", "67.87.6.71/32", data.aws_vpc.default.cidr_block ]
   }
 }
 
