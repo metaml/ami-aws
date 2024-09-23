@@ -8,7 +8,9 @@ BEGIN;
  	 prompt text not null,
          member_id text not null,
          friend_id text not null,
-         created_at timestamptz not null default now()
-         );
+	 enabled boolean not null,
+         created_at timestamptz not null default now(),
+         unique (prompt, friend_id, member_id)
+  );
 
 COMMIT;
