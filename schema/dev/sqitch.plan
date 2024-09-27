@@ -3,3 +3,6 @@
 %uri=https://github.com/sqitchers/sqitch-intro/
 
 schema 2024-09-27T01:47:01Z Mike <ml@go.local> # schema for aip
+conversation [schema] 2024-09-27T02:06:34Z Mike <ml@go.local> # "add conversation"
+member [schema] 2024-09-27T02:07:44Z Mike <ml@go.local> # "add member"
+prompt [schema] 2024-09-27T02:08:07Z Mike <ml@go.local> # "add prompt"
