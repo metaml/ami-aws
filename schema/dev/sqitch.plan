@@ -1,0 +1,5 @@
+%syntax-version=1.0.0
+%project=aip
+%uri=https://github.com/sqitchers/sqitch-intro/
+
+schema 2024-09-27T01:47:01Z Mike <ml@go.local> # schema for aip
