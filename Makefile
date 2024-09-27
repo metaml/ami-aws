@@ -48,7 +48,7 @@ lambda-update: image-update ## update lambda after image-push
 	--image-uri=$(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/aip-lambda:latest
 
 clean: ## clean
-	find . -name \*~ | xargs rm -f
+	find . -name \*~ -o -regex '.*#.*' | xargs rm -f
 	rm -f *.zip
 
 clean-prune: ## docker system prune
