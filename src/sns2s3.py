@@ -16,7 +16,7 @@ def write_to_s3(rec):
     s3 = boto3.resource("s3")
     print(f"write_to_s3: make obj")
     obj = s3.Object("aip-recomune-us-east-2", f"michael.lee/dialog/{tick()}.json")
-    print(f"write_to_s3: made obj={msg}, putting")
+    print(f"write_to_s3: made obj={msg}")
     obj.put(Body=msg)
     print(f"wrote_to_s3: put finished")
     print(f"message: {msg}")

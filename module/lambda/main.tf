@@ -16,10 +16,66 @@ data "aws_iam_policy_document" "assume_role" {
   }
 }
 
+resource "aws_iam_role" "aip" {
+  name   = "aip-lambda-role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
+resource "aws_iam_policy" "ami" {
+  name = "ami"
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = [
+	  "lambda:_ReadOnlyAccess",
+	  "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+	  "s3:PutObject",
+	  "sns:AmazonSNSReadOnlyAccess",
+	]
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_policy_attachment" "ami" {
+  name       = "attachment"
+  roles      = [ aws_iam_role.aip.name ]
+  policy_arn = aws_iam_policy.ami.arn
+}
+
+# resource "aws_iam_role_policy_attachment" "aip" {
+#   for_each = toset([
+#     "arn:aws:iam::aws:policy/AWSLambdaExecute",
+#     "arn:aws:iam::aws:policy/AWSLambda_FullAccess",
+#     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+#     "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
+#     "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
+#     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+#     "arn:aws:iam::aws:policy/AmazonSNSReadOnlyAccess",
+#     "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+#   ])
+#   role       = "${aws_iam_role.aip.name}"
+#   policy_arn = each.value
+# }
+
+
 resource "aws_security_group" "lambda" {
   name        = "lambda"
   vpc_id      = data.aws_vpc.default.id
   description = "allow all outbound"
+  ingress {
+    protocol  = -1
+    self      = true
+    from_port = 0
+    to_port   = 0
+  }
   egress {
     from_port   = 0
     to_port     = 0
@@ -28,42 +84,15 @@ resource "aws_security_group" "lambda" {
   }
 }
 
-resource "aws_iam_role" "aip" {
-  name   = "aip-lambda-role"
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
-}
-
-resource "aws_iam_role_policy_attachment" "aip" {
-  for_each = toset([
-    "arn:aws:iam::aws:policy/AWSLambdaExecute",
-    "arn:aws:iam::aws:policy/AWSLambda_FullAccess",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess",
-    "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
-    "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
-    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-    "arn:aws:iam::aws:policy/AmazonSNSReadOnlyAccess",
-    "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
-  ])
-  role       = "${aws_iam_role.aip.name}"
-  policy_arn = each.value
-}
-
 ### sns to s3
 resource "aws_lambda_function" "sns2s3" {
   function_name = "sns2s3"
   image_uri     = "${data.aws_ecr_repository.aip-lambda.repository_url}:latest"
   package_type  = "Image"
   role          = aws_iam_role.aip.arn
-  timeout       = 900 # seconds
+  timeout       = 60 # 900 # seconds
   image_config {
     command = ["sns2s3.handler"]
-  }
-  vpc_config {
-    subnet_ids = [ data.aws_subnet.default-a.id,
-                   data.aws_subnet.default-b.id,
-                   data.aws_subnet.default-c.id,
-                 ]
-    security_group_ids = [ aws_security_group.lambda.id ]
   }
   environment {
     variables = {
