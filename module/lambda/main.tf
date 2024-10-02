@@ -31,7 +31,6 @@ resource "aws_iam_policy" "ami" {
       {
         Effect   = "Allow"
         Action   = [
-	  "lambda:_ReadOnlyAccess",
 	  "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:PutLogEvents",
@@ -49,21 +48,6 @@ resource "aws_iam_policy_attachment" "ami" {
   roles      = [ aws_iam_role.aip.name ]
   policy_arn = aws_iam_policy.ami.arn
 }
-
-# resource "aws_iam_role_policy_attachment" "aip" {
-#   for_each = toset([
-#     "arn:aws:iam::aws:policy/AWSLambdaExecute",
-#     "arn:aws:iam::aws:policy/AWSLambda_FullAccess",
-#     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-#     "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
-#     "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
-#     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-#     "arn:aws:iam::aws:policy/AmazonSNSReadOnlyAccess",
-#     "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
-#   ])
-#   role       = "${aws_iam_role.aip.name}"
-#   policy_arn = each.value
-# }
 
 
 resource "aws_security_group" "lambda" {
