@@ -23,23 +23,19 @@ resource "aws_iam_role" "aip" {
 
 resource "aws_iam_policy" "ami" {
   name = "ami"
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
   policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect   = "Allow"
-        Action   = [
-	  "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents",
-	  "s3:PutObject",
-	  "sns:AmazonSNSReadOnlyAccess",
-	]
-        Resource = "*"
-      },
-    ]
+    Version   = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+	"logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+	"s3:PutObject",
+	"sns:AmazonSNSReadOnlyAccess",
+      ]
+      Resource = "*"
+    }]
   })
 }
 
@@ -48,7 +44,6 @@ resource "aws_iam_policy_attachment" "ami" {
   roles      = [ aws_iam_role.aip.name ]
   policy_arn = aws_iam_policy.ami.arn
 }
-
 
 resource "aws_security_group" "lambda" {
   name        = "lambda"
