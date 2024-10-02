@@ -28,11 +28,14 @@ resource "aws_iam_policy" "ami" {
     Statement = [{
       Effect = "Allow"
       Action = [
-	"logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents",
+	"ec2:*",
+	"ecr:*",
+	"logs:*",
+	"rds-db:*",
+	"rds:*",
 	"s3:PutObject",
-	"sns:AmazonSNSReadOnlyAccess",
+	"secretsmanager:*",
+	"sns:*",
       ]
       Resource = "*"
     }]
@@ -95,7 +98,6 @@ resource "aws_sns_topic_subscription" "sns2s3" {
   topic_arn = "arn:aws:sns:us-east-2:975050288432:aip"
   protocol  = "lambda"
   endpoint  = aws_lambda_function.sns2s3.arn
-
   depends_on = [aws_lambda_permission.sns2s3]
 }
 
@@ -109,13 +111,13 @@ resource "aws_lambda_function" "s32rds" {
   image_config {
     command = ["s32rds.handler"]
   }
-  vpc_config {
-    subnet_ids = [ data.aws_subnet.default-a.id,
-                   data.aws_subnet.default-b.id,
-                   data.aws_subnet.default-c.id,
-                 ]
-    security_group_ids = [ aws_security_group.lambda.id ]
-  }
+  # vpc_config {
+  #   subnet_ids = [ data.aws_subnet.default-a.id,
+  #                  data.aws_subnet.default-b.id,
+  #                  data.aws_subnet.default-c.id,
+  #                ]
+  #   security_group_ids = [ aws_security_group.lambda.id ]
+  # }
   environment {
     variables = {
       Name = "s32rds"

@@ -2,6 +2,7 @@ import asyncio
 import asyncpg
 import boto3
 import json
+import socket as s
 import time
 
 def handler(event, context):
@@ -13,6 +14,10 @@ def handler(event, context):
 def insert_dialog(u, p, h, recs):
   async def insert():
     try:
+      print('#### u=', u)
+      print('#### h=', h)
+      print('#### ip=', s.gethostbyname(h))
+      print('#### myip=', s.gethostbyname(s.gethostname()))
       c = await asyncpg.connect(user=u, password=p, database='aip', host=h)
       for rec in recs:
         bucket = rec['s3']['bucket']['name']
@@ -42,7 +47,7 @@ def credentials():
   sec = boto3.client(service_name='secretsmanager', region_name='us-east-2')
   u = user(sec)
   p = passwd(sec)
-  h = 'ec2-18-219-36-48.us-east-2.compute.amazonaws.com'
+  h = 'ec2-18-219-36-48.us-east-2.compute.amazonaws.com' # 'aip.c7eaoykysgcc.us-east-2.rds.amazonaws.com'
   return u['SecretString'], p['SecretString'], h
 
 def user(sec):
