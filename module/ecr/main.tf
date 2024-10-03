@@ -69,9 +69,9 @@ resource "aws_ecr_lifecycle_policy" "aip" {
 EOF
 }
 
-# ami
+# ami lambda
 resource "aws_ecr_repository" "ami" {
-  name = "ami-rest"
+  name = "ami-lambda"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration { scan_on_push = true }
   encryption_configuration { encryption_type = "KMS" }
