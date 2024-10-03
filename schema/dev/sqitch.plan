@@ -2,7 +2,8 @@
 %project=aip
 %uri=https://github.com/sqitchers/sqitch-intro/
 
-schema 2024-09-27T01:47:01Z Mike <ml@go.local> # schema for aip
-conversation [schema] 2024-09-27T02:06:34Z Mike <ml@go.local> # "add conversation"
-member [schema] 2024-09-27T02:07:44Z Mike <ml@go.local> # "add member"
-prompt [schema] 2024-09-27T02:08:07Z Mike <ml@go.local> # "add prompt"
+schema 2024-10-03T08:50:16Z Mike <ml@go.local> # schema for aip
+conversation [schema] 2024-10-03T08:50:34Z Mike <ml@go.local> # "add conversation"
+member [schema] 2024-10-03T08:51:13Z Mike <ml@go.local> # "add member"
+prompt [schema] 2024-10-03T08:51:29Z Mike <ml@go.local> # "add prompt"
+conversation_meta [schema] 2024-10-03T08:51:55Z Mike <ml@go.local> # "add conversation_meta"
