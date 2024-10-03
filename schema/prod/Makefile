@@ -1,5 +1,7 @@
 .DEFAULT_GOAL = help
 
+AWS = PYTHONPATH= aws
+
 add: NB ?= "add ${OBJ}"
 add: ## add a sqitch file: $OBJ required, $NB optional
 	sqitch add ${OBJ} --requires schema --note '${NB}'
