@@ -4,6 +4,7 @@ import boto3
 import json
 import socket as s
 import time
+import traceback
 
 def handler(event, context):
   print(f"in s32rds handler, event={event}")
@@ -19,11 +20,13 @@ def insert_dialog(u, p, h, recs):
       print('#### ip=', s.gethostbyname(h))
       print('#### myip=', s.gethostbyname(s.gethostname()))
       c = await asyncpg.connect(user=u, password=p, database='aip', host=h)
+      print('#### got DB connection')
       for rec in recs:
         bucket = rec['s3']['bucket']['name']
         key = rec['s3']['object']['key']
         content = s3_object(bucket, key)
         msg = json.loads(content)
+        print('######## msg=', msg)
         line = msg['content']
         await c.execute('insert into conversation (member_id, friend_id, friend_type, speaker_type, line, message) values ($1, $2, $3, $4, $5, $6)',
                         'john.smith',
@@ -36,6 +39,7 @@ def insert_dialog(u, p, h, recs):
       await c.close()
     except Exception as e:
       print("exception:", e)
+      print(traceback.print_exc())
   asyncio.run(insert())
 
 def s3_object(bucket, key):
@@ -47,7 +51,7 @@ def credentials():
   sec = boto3.client(service_name='secretsmanager', region_name='us-east-2')
   u = user(sec)
   p = passwd(sec)
-  h = 'ec2-18-219-36-48.us-east-2.compute.amazonaws.com' # 'aip.c7eaoykysgcc.us-east-2.rds.amazonaws.com'
+  h = 'aip.c7eaoykysgcc.us-east-2.rds.amazonaws.com'
   return u['SecretString'], p['SecretString'], h
 
 def user(sec):

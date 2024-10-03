@@ -1,23 +1,8 @@
-data "aws_vpc" "default" {
-  default = true
-}
-
-data "aws_secretsmanager_secret" "db-password" {
-  name = "db-password"
-}
-
-data "aws_secretsmanager_secret_version" "db-password" {
-  secret_id = data.aws_secretsmanager_secret.db-password.id
-}
-
-data "aws_secretsmanager_secret" "db-user" {
-  name = "db-user"
-}
-
-data "aws_secretsmanager_secret_version" "db-user" {
-  secret_id = data.aws_secretsmanager_secret.db-user.id
-}
-
+data "aws_vpc" "default" { default = true }
+data "aws_secretsmanager_secret" "db-password" { name = "db-password" }
+data "aws_secretsmanager_secret_version" "db-password" { secret_id = data.aws_secretsmanager_secret.db-password.id }
+data "aws_secretsmanager_secret" "db-user" { name = "db-user" }
+data "aws_secretsmanager_secret_version" "db-user" { secret_id = data.aws_secretsmanager_secret.db-user.id }
 resource "random_string" "password" {
   length  = 64
   upper   = true
@@ -29,11 +14,25 @@ resource "aws_security_group" "rds" {
   vpc_id      = data.aws_vpc.default.id
   name        = "aip"
   description = "allow all inbound for Postgres"
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [ "0.0.0.0/0" ]
+  }
   ingress {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = [ "50.68.120.205/32", "67.87.6.71/32", data.aws_vpc.default.cidr_block ]
+    # cidr_blocks = [ "0.0.0.0/0" ] # this works!
+    cidr_blocks = [
+      "50.68.120.205/32",
+      "67.87.6.71/32",
+      "172.31.32.0/20",
+      "172.31.16.0/20",
+      "172.31.0.0/20",
+      "0.0.0.0/0" # @todo: terrible hack but it works for now; fix later
+    ]
   }
 }
 
@@ -68,8 +67,8 @@ resource "aws_db_instance" "aip" {
   storage_encrypted      = true
   engine                 = "postgres"
   engine_version         = "16.3"
-  publicly_accessible    = true
-  vpc_security_group_ids = [aws_security_group.rds.id]
+  publicly_accessible    = true # @todo: needed together with ingress-0.0.0.0/0 hack; fix later
+  # vpc_security_group_ids = [aws_security_group.rds.id]
   username               = data.aws_secretsmanager_secret_version.db-user.secret_string
   password               = data.aws_secretsmanager_secret_version.db-password.secret_string
   skip_final_snapshot    = true

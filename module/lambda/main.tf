@@ -30,10 +30,12 @@ resource "aws_iam_policy" "ami" {
       Action = [
 	"ec2:*",
 	"ecr:*",
+	"iam:*", # @todo: narrow down to specific actions
 	"logs:*",
 	"rds-db:*",
 	"rds:*",
 	"s3:PutObject",
+	"s3:GetObject",
 	"secretsmanager:*",
 	"sns:*",
       ]
@@ -52,12 +54,6 @@ resource "aws_security_group" "lambda" {
   name        = "lambda"
   vpc_id      = data.aws_vpc.default.id
   description = "allow all outbound"
-  ingress {
-    protocol  = -1
-    self      = true
-    from_port = 0
-    to_port   = 0
-  }
   egress {
     from_port   = 0
     to_port     = 0
@@ -84,6 +80,9 @@ resource "aws_lambda_function" "sns2s3" {
       CreatedBy = "github:reomune/aip-aws"
    }
   }
+  depends_on = [ aws_iam_policy.ami,
+                 aws_iam_policy_attachment.ami,
+               ]
 }
 
 resource "aws_lambda_permission" "sns2s3" {
@@ -111,13 +110,6 @@ resource "aws_lambda_function" "s32rds" {
   image_config {
     command = ["s32rds.handler"]
   }
-  # vpc_config {
-  #   subnet_ids = [ data.aws_subnet.default-a.id,
-  #                  data.aws_subnet.default-b.id,
-  #                  data.aws_subnet.default-c.id,
-  #                ]
-  #   security_group_ids = [ aws_security_group.lambda.id ]
-  # }
   environment {
     variables = {
       Name = "s32rds"
@@ -126,6 +118,9 @@ resource "aws_lambda_function" "s32rds" {
       CreatedBy = "github:reomune/aip-aws"
    }
   }
+  depends_on = [ aws_iam_policy.ami,
+                 aws_iam_policy_attachment.ami,
+               ]
 }
 
 resource "aws_lambda_permission" "s32rds" {
