@@ -2,13 +2,13 @@ import asyncio
 import asyncpg
 import boto3
 import json
-import socket as s
+import text as t
 import time
 import traceback
 
 def handler(event, context):
   print(f"in analytics handler, event={event}")
-  u, p, h = credentials()
+  u, p, h = t.credentials()
   print(f"in analytics handler, got credential")
   analytics(u, p, h, event['Records'])
 
@@ -17,8 +17,10 @@ def analytics(u, p, h, recs):
     try:
       c = await asyncpg.connect(user=u, password=p, database='aip', host=h)
       for rec in recs:
-        d = conversation_ids(rec)
-        print(d)
+        print("######## rec=", rec)
+        ids = conversation_ids(rec)
+        print(ids)
+        t.analyze(ids)
       await c.close()
     except Exception as e:
       print("exception:", e)
@@ -29,6 +31,7 @@ def conversation_ids(rec):
   bucket = rec['s3']['bucket']['name']
   key = rec['s3']['object']['key']
   content = s3_object(bucket, key)
+  print("######## content=", content)
   return json.loads(content)
 
 def s3_object(bucket, key):
@@ -38,8 +41,8 @@ def s3_object(bucket, key):
 
 def credentials():
   sec = boto3.client(service_name='secretsmanager', region_name='us-east-2')
-  u = user(sec)
-  p = passwd(sec)
+  u = t.user(sec)
+  p = t.passwd(sec)
   h = 'aip.c7eaoykysgcc.us-east-2.rds.amazonaws.com'
   return u['SecretString'], p['SecretString'], h
 

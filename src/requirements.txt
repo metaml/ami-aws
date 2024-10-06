@@ -1,3 +1,4 @@
 asyncpg
 boto3
 openai
+pydantic-core
