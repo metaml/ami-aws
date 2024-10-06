@@ -182,7 +182,6 @@ resource "aws_s3_bucket_notification" "analytics" {
     filter_prefix       = "analytics/"
     filter_suffix       = ".json"
   }
-
   depends_on = [aws_lambda_permission.analytics]
 }
 

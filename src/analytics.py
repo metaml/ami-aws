@@ -17,7 +17,7 @@ def analytics(u, p, h, recs):
     try:
       c = await asyncpg.connect(user=u, password=p, database='aip', host=h)
       for rec in recs:
-        d = dialog(rec)
+        d = conversation_ids(rec)
         print(d)
       await c.close()
     except Exception as e:
@@ -25,7 +25,7 @@ def analytics(u, p, h, recs):
       print(traceback.print_exc())
   asyncio.run(insert())
 
-def dialog(rec):
+def conversation_ids(rec):
   bucket = rec['s3']['bucket']['name']
   key = rec['s3']['object']['key']
   content = s3_object(bucket, key)

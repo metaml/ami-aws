@@ -46,6 +46,10 @@ lambda-update: image-update ## update lambda after image-push
 	--no-cli-pager \
 	--function-name=s32rds \
 	--image-uri=$(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/aip-lambda:latest
+	aws lambda update-function-code \
+	--no-cli-pager \
+	--function-name=analytics \
+	--image-uri=$(ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com/aip-lambda:latest
 
 clean: ## clean
 	find . -name \*~ -o -regex '.*#.*' | xargs rm -f

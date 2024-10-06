@@ -40,6 +40,6 @@ variable "tags" {
     Name = "aip"
     Terraform = "true"
     Environment = "production"
-    CreatedBy = "github:recomune/aip-aws"
+    CreatedBy = "github:recomune/ami-aws"
   }
 }
