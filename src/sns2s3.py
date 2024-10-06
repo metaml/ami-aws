@@ -1,3 +1,4 @@
+from datetime import date
 import boto3
 import json
 import time
@@ -11,11 +12,12 @@ def handler(event, context):
     print(f"handler wrote rec")
 
 def write_to_s3(rec):
+  day = date.today()
   try:
     msg = rec['Sns']['Message']
     s3 = boto3.resource("s3")
     print(f"write_to_s3: make obj")
-    obj = s3.Object("aip-recomune-us-east-2", f"michael.lee/dialog/{tick()}.json")
+    obj = s3.Object("aip-recomune-us-east-2", f"conversation/{day.year}/{day.month}/{day.day}/{tick()}.json")
     print(f"write_to_s3: made obj={msg}")
     obj.put(Body=msg)
     print(f"wrote_to_s3: put finished")

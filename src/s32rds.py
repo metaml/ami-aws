@@ -28,14 +28,20 @@ def insert_dialog(u, p, h, recs):
         msg = json.loads(content)
         print('######## msg=', msg)
         line = msg['content']
-        await c.execute('insert into conversation (member_id, friend_id, friend_type, speaker_type, line, message) values ($1, $2, $3, $4, $5, $6)',
-                        'john.smith',
-                        'michael.lee',
-                        'human',
-                        'member',
-                        line,
-                        json.dumps(msg)
-                       )
+        speaker_type = None
+        if msg['role'] == 'assistant':
+          speaker_type = 'friend'
+        else:
+          speaker_type = 'member'
+        await c.execute('insert into conversation (member_id, friend_id, friend_type, speaker_type, line, message, message_state) values ( $1, $2, $3, $4, $5, $6, $7)',
+                  msg['member'],
+                  msg['friend'],
+                  'human',
+                  speaker_type,
+                  line,
+                  json.dumps(msg),
+                  'itm'
+                )
       await c.close()
     except Exception as e:
       print("exception:", e)

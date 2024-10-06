@@ -136,11 +136,54 @@ resource "aws_s3_bucket_notification" "s32rds" {
   lambda_function {
     lambda_function_arn = aws_lambda_function.s32rds.arn
     events              = ["s3:ObjectCreated:*"]
-    filter_prefix       = null
-    filter_suffix       = null
+    filter_prefix       = "conversation/"
+    filter_suffix       = ".json"
   }
 
   depends_on = [aws_lambda_permission.s32rds]
+}
+
+### text analytics
+resource "aws_lambda_function" "analytics" {
+  function_name = "analytics"
+  image_uri     = "${data.aws_ecr_repository.aip-lambda.repository_url}:latest"
+  package_type  = "Image"
+  role          = aws_iam_role.aip.arn
+  timeout       = 900 # seconds
+  image_config {
+    command = ["analytics.handler"]
+  }
+  environment {
+    variables = {
+      Name = "analytics"
+      Terraform = "true"
+      Environment = "production"
+      CreatedBy = "github:reomune/aip-aws"
+   }
+  }
+  depends_on = [ aws_iam_policy.ami,
+                 aws_iam_policy_attachment.ami,
+               ]
+}
+
+resource "aws_lambda_permission" "analytics" {
+  statement_id = "AllowS3Invoke"
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.analytics.function_name
+  principal  = "s3.amazonaws.com"
+  source_arn = "arn:aws:s3:::aip-recomune-us-east-2"
+}
+
+resource "aws_s3_bucket_notification" "analytics" {
+  bucket = "aip-recomune-us-east-2"
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.analytics.arn
+    events              = ["s3:ObjectCreated:*"]
+    filter_prefix       = "analytics/"
+    filter_suffix       = ".json"
+  }
+
+  depends_on = [aws_lambda_permission.analytics]
 }
 
 ###
@@ -151,4 +194,8 @@ output "sns2s3-arn" {
 
 output "s32rds-arn" {
   value = "${aws_lambda_function.s32rds.arn}"
+}
+
+output "analytics-arn" {
+  value = "${aws_lambda_function.analytics.arn}"
 }
