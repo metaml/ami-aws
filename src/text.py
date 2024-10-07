@@ -90,7 +90,7 @@ def credentials():
   u = s.get_secret_value(SecretId='db-user')
   p = s.get_secret_value(SecretId='db-password')
   s.close()
-  if os.getenv('MODE').lower() == 'dev':
-    return 'aip-dev', p['SecretString'], 'localhost','aip-dev'
-  else:
+  if os.getenv('MODE') == None:
     return u['SecretString'], p['SecretString'], 'aip.c7eaoykysgcc.us-east-2.rds.amazonaws.com', 'aip'
+  else:
+    return 'aip-dev', p['SecretString'], 'localhost','aip-dev'
