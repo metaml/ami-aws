@@ -1,6 +1,6 @@
-image:
-	docker build --platform linux/amd64 --tag aip-lambda:latest .
+image:;	docker build --platform linux/amd64 --tag aip-lambda:latest .
 
-clean:
-	rm -f *~
+test: export MODE = dev
+test:; python ./analytics.py
 
+clean:;	rm -f *~

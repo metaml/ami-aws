@@ -1,117 +1,96 @@
 from typing import Annotated
 import asyncio as aio
+import asyncpg
 import boto3
 import json
+import openai
 import os
 import pydantic
 
-clients = {}
-
-async def clients():
-  key = os.getenv("OPENAI_API_KEY")
-  if key == None:
-    key = openai_api_key()
-
-  u, p, h = credentials()
-  clients['password-db'] = p
-  if os.getenv('MODE') == 'DEV':
-    clients['user-db'] = 'aip-dev'
-    clients['password-db'] = p
-    clients['host-db'] = 'localhost'
-    clients['db'] = 'aip-dev'
-  else:
-    clients['user-db'] = u
-    clients['password-db'] = p
-    clients['host-db'] = h
-    clients['db'] = 'aip'
-
-  client_args = {}
-  client_args["api_key"] = key
-  clients["openai"] = openai.AsyncOpenAI(**client_args)
-  yield
-  await clients["openai"].close()
-
-def user(sec):
-  return sec.get_secret_value(SecretId='db-user')
-
-def passwd(sec):
-  return sec.get_secret_value(SecretId='db-password')
-
-def credentials():
-  sec = boto3.client(service_name='secretsmanager', region_name='us-east-2')
-  u = user(sec)
-  p = passwd(sec)
-  c = u['SecretString'], p['SecretString'], "aip.c7eaoykysgcc.us-east-2.rds.amazonaws.com"
-  sec.close()
-  return c
-
-def openai_api_key() -> str:
-  c = boto3.client('secretsmanager')
-  s = c.get_secret_value(SecretId='openai-api-key')['SecretString']
-  c.close()
-  return s
-
-async def conversions(ids: [int]) -> [str]:
-  u, p, h, db = clients['user-db'], clients['password-db'], clients['host-db'], clients['db']
-  recs = []
-  try:
-    c = await asyncpg.connect(user=u, password=p, database=db, host=h)
-    recs = await c.fetchrow('select * from conversion where id in $1', ids)
-    print("######## recs=", recs)
-    await c.close()
-  except Exception as e:
-    print("exception:", e)
-
-  if recs == None:
-    return None
-  else:
-    return [json.loads(r[0]) for r in recs]
+# to change or add the type of text analysis, you need to add a row to conversation_meta table
+PROMPTS = [ ('summary',   'Summarize the following dialog very tersely as bullet points'),
+            ('sentiment', 'List the sentiments of the following dialog as bullet points'),
+            ('detail',    'List the fine features of the following dialog as bullet points'),
+            ('theme',     'Listt the themes from the follwing dialog as bullet points'),
+            ('entity',    'List named enitites, dates, addresses, etc. from the following dialog as bullet points'),
+            ('event',      'List all the events of following dialog as bullet points'),
+            #('analysis', 'Generate summaries, themes, sentiments, topics for the following dialog as bullet points, be accurate, and format the ouput as bullet points'),
+            #('questions', 'Ask 3 informal light questions as a friend based on the following dialog')
+          ]
 
 class TextRequest(pydantic.BaseModel):
   content: str
   prompt: str
 
-async def post(req: TextRequest) -> str:
-  res = await clients["openai"].chat.completions.create(
+async def analyze(ids: [int]) -> [(str, str)]:
+  meta_data = []
+  dialog = await dialogue(ids)
+  client = openai_client()
+  for prompt in PROMPTS:
+    key = prompt[0]
+    meta = await post(TextRequest(prompt=prompt[1], content=dialog), client)
+    meta_data.append((key, meta))
+  await client.close()
+  return meta_data
+
+async def dialogue(ids: [int]) -> str:
+  def line(row):
+    pair = None
+    if row['speaker_type'] == 'member':
+      pair = (row['member_id'].strip(), row['line'].strip())
+    else:
+      pair = (row['friend_id'].strip(), row['line'].strip())
+    return pair
+  rows = await conversations(ids)
+  pairs = list(map(lambda r: line(r), rows))
+  lines = list(map(lambda p: f"{p[0]}: {p[1]}", pairs))
+  return "\n\n\n".join(lines)
+
+async def metadata(prompt:str, content: str, client) -> str:
+  return await post(TextRequest(prompt=prompt, content=content), client)
+
+async def conversations(ids: [int]) -> [str]:
+  u, p, h, db = credentials()
+  recs = None
+  try:
+    db = await asyncpg.connect(user=u, password=p, database=db, host=h)
+    rows = await db.fetch('select * from conversation where id = any($1::int[])', ids)
+    await db.close()
+  except Exception as e:
+    print("exception:", e)
+  if rows == None: return []
+  else: return rows
+
+async def post(req: TextRequest, client) -> str:
+  client = openai_client()
+  res = await client.chat.completions.create(
     model = 'gpt-4o',
     messages = [ { 'role': 'user',
-                   'content': f"{req.prompt} '{req.content}'"
+                   'content': f"{req.prompt}: '{req.content}'"
                  }
                ],
     temperature = 0.0,
     stream = False
   )
-  await clients["openai"].close()
   return res.model_dump()
 
-class TextRequest(pydantic.BaseModel):
-  content: str
-  prompt: str
+def openai_client():
+  args = {}
+  args['api_key'] = openai_api_key()
+  return openai.AsyncOpenAI(**args)
 
-async def summary(content: str) -> str:
-  return await post(TextRequest(prompt='Summarize the following text very tersely:', content=content))
+def openai_api_key() -> str:
+  c = boto3.client('secretsmanager')
+  k = c.get_secret_value(SecretId='openai-api-key')['SecretString']
+  c.close()
+  return k
 
-async def sentiment(content: str) -> str:
-  return await post(TextRequest(prompt='Analyze the sentiment of the following text as bullet points:', content=content))
-
-async def details(content: str) -> str:
-  return await post(TextRequest(prompt='Extract the fine features of the following text as bullet points:', content=content))
-
-async def themes(content: str) -> str:
-  return await post(TextRequest(prompt='Extract the themes from the follwing text as bullet points:', content=content))
-
-async def entities(content: str) -> str:
-  return await post(TextRequest(prompt='Extract the named enitites from the following text as bullet points:', content=content))
-
-async def analysis(content: str) -> str:
-  return await post(TextRequest(prompt='Generate summaries, themes, sentiments, topics for the following text as bullet points, be accurate, and format the ouput as bullet points.', content=content))
-
-async def events(content: str) -> str:
-  return await post(TextRequest(prompt='Extract all the events of following text as bullet points.', content=content))
-
-async def question(content: str) -> str:
-  return await post(TextRequest(prompt='Generate a informal light question as a friend based on the content:', content=content))
-
-def analyze(ids: [int]) -> bool:
-  c = clients()
-  cs = conversions(ids)
+def credentials():
+  s = boto3.client(service_name='secretsmanager', region_name='us-east-2')
+  u = s.get_secret_value(SecretId='db-user')
+  p = s.get_secret_value(SecretId='db-password')
+  s.close()
+  if os.getenv('MODE').lower() == 'dev':
+    return 'aip-dev', p['SecretString'], 'localhost','aip-dev'
+  else:
+    return u['SecretString'], p['SecretString'], 'aip.c7eaoykysgcc.us-east-2.rds.amazonaws.com', 'aip'
