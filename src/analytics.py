@@ -7,8 +7,27 @@ import time
 import traceback
 
 def handler(event, context):
-  print(f"in analytics handler, event={event}")
+  print("analytics")
   analytics(event['Records'])
+  print("conversation_update: itm -> stm")
+  conversation_update(event['Records'])
+  print("analytics handler finished")
+
+def conversation_update(recs):
+  async def update():
+    try:
+      u, p, h, db = t.credentials()
+      c = await asyncpg.connect(user=u, password=p, database=db, host=h)
+      for rec in recs:
+        crec = await conversation_ids(rec)
+        for id in crec['ids']:
+          print("- id=", id)
+          await c.execute('update conversation set message_state=$2 where id=$1', id, 'stm')
+      await c.close()
+    except Exception as e:
+      print("exception:", e)
+      print(traceback.print_exc())
+  return aio.run(update())
 
 def analytics(recs):
   async def insert():
