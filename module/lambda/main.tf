@@ -139,7 +139,6 @@ resource "aws_s3_bucket_notification" "s32rds" {
     filter_prefix       = "conversation/"
     filter_suffix       = ".json"
   }
-
   depends_on = [aws_lambda_permission.s32rds]
 }
 
