@@ -9,12 +9,12 @@ data "aws_instance" "ec2" {
   }
 }
 
-resource "aws_security_group" "http" {
-  name        = "http"
-  description = "allow incoming HTTP connections"
+resource "aws_security_group" "https" {
+  name        = "https"
+  description = "allow incoming HTTPS connections"
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = [ "50.68.120.205/32", "67.87.6.71/32", "99.76.147.145/32", data.aws_vpc.default.cidr_block ]
   }
@@ -36,8 +36,10 @@ resource "aws_lb" "alb" {
   name               = "alb"
   internal           = false
   ip_address_type    = "ipv4"
-  load_balancer_type = "application"
-  security_groups    = [ aws_security_group.http.id ]
+  load_balancer_type = "network"
+  # note: http/https lb below vs. a network lb above
+  # load_balancer_type = "application"
+  security_groups    = [ aws_security_group.https.id ]
   subnets = [
     data.aws_subnet.default-a.id,
     data.aws_subnet.default-b.id,
@@ -49,40 +51,43 @@ resource "aws_lb" "alb" {
   depends_on = [ data.aws_instance.ec2 ]
 }
 
-resource "aws_lb_listener" "listener" {
-  load_balancer_arn = aws_lb.alb.arn
-  port              = 80
-  protocol          = "HTTP"
-  default_action {
-    target_group_arn = aws_lb_target_group.ami.arn
-    type             = "forward"
-  }
-}
-
-resource "aws_lb_listener" "listener-8000" {
-  load_balancer_arn = aws_lb.alb.arn
-  port              = 8000
-  protocol          = "HTTP"
-  default_action {
-    target_group_arn = aws_lb_target_group.ami.arn
-    type             = "forward"
-  }
-}
-
 resource "aws_lb_target_group" "ami" {
   name         = "ami"
   port         = 8000
-  protocol     = "HTTP"
+  protocol     = "TCP"
+  # protocol     = "HTTPS"    # load_balancer_type = "application"
   target_type  = "instance"
   vpc_id = data.aws_vpc.default.id
   health_check {
     interval            = 8
     path                = "/ping"
-    protocol            = "HTTP"
+    protocol            = "HTTPS"
     timeout             = 5
     healthy_threshold   = 3
     unhealthy_threshold = 2
   }
+}
+
+resource "aws_lb_listener" "listener" {
+  load_balancer_arn = aws_lb.alb.id
+  port              = 443
+  protocol          = "TCP"
+  default_action {
+    target_group_arn = aws_lb_target_group.ami.id
+    type             = "forward"
+  }
+  depends_on = [ aws_lb_target_group.ami ]
+}
+
+resource "aws_lb_listener" "listener-8000" {
+  load_balancer_arn = aws_lb.alb.id
+  port              = 8000
+  protocol          = "TCP"
+  default_action {
+    target_group_arn = aws_lb_target_group.ami.arn
+    type             = "forward"
+  }
+  depends_on = [ aws_lb_target_group.ami ]
 }
 
 resource "aws_lb_target_group_attachment" "ami" {
