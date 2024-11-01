@@ -68,7 +68,7 @@ resource "aws_lambda_function" "sns2s3" {
   image_uri     = "${data.aws_ecr_repository.aip-lambda.repository_url}:latest"
   package_type  = "Image"
   role          = aws_iam_role.aip.arn
-  timeout       = 60 # 900 # seconds
+  timeout       = 300 # seconds
   image_config {
     command = ["sns2s3.handler"]
   }
