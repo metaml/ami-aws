@@ -13,14 +13,14 @@ resource "aws_security_group" "https" {
   name        = "https"
   description = "allow incoming HTTPS connections"
   ingress {
-    from_port   = 443
-    to_port     = 443
+    from_port   = 8000
+    to_port     = 8000
     protocol    = "tcp"
     cidr_blocks = [ "50.68.120.205/32", "67.87.6.71/32", "99.76.147.145/32", data.aws_vpc.default.cidr_block ]
   }
   ingress {
-    from_port   = 8000
-    to_port     = 8000
+    from_port   = 8283
+    to_port     = 8283
     protocol    = "tcp"
     cidr_blocks = [ "50.68.120.205/32", "67.87.6.71/32", "99.76.147.145/32", data.aws_vpc.default.cidr_block ]
   }
@@ -68,20 +68,20 @@ resource "aws_lb_target_group" "ami" {
   }
 }
 
-resource "aws_lb_listener" "listener" {
+resource "aws_lb_listener" "listener-8000" {
   load_balancer_arn = aws_lb.alb.id
-  port              = 443
+  port              = 8000
   protocol          = "TCP"
   default_action {
-    target_group_arn = aws_lb_target_group.ami.id
+    target_group_arn = aws_lb_target_group.ami.arn
     type             = "forward"
   }
   depends_on = [ aws_lb_target_group.ami ]
 }
 
-resource "aws_lb_listener" "listener-8000" {
+resource "aws_lb_listener" "listener-8283" {
   load_balancer_arn = aws_lb.alb.id
-  port              = 8000
+  port              = 8283
   protocol          = "TCP"
   default_action {
     target_group_arn = aws_lb_target_group.ami.arn
