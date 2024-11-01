@@ -131,17 +131,6 @@ resource "aws_lambda_permission" "s32rds" {
   source_arn = "arn:aws:s3:::aip-recomune-us-east-2"
 }
 
-resource "aws_s3_bucket_notification" "s32rds" {
-  bucket = "aip-recomune-us-east-2"
-  lambda_function {
-    lambda_function_arn = aws_lambda_function.s32rds.arn
-    events              = ["s3:ObjectCreated:*"]
-    filter_prefix       = "conversation/"
-    filter_suffix       = ".json"
-  }
-  depends_on = [aws_lambda_permission.s32rds]
-}
-
 ### text analytics
 resource "aws_lambda_function" "analytics" {
   function_name = "analytics"
@@ -173,15 +162,22 @@ resource "aws_lambda_permission" "analytics" {
   source_arn = "arn:aws:s3:::aip-recomune-us-east-2"
 }
 
-resource "aws_s3_bucket_notification" "analytics" {
+resource "aws_s3_bucket_notification" "ami-recomune" {
   bucket = "aip-recomune-us-east-2"
+  # s3 to rds conversation history
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.s32rds.arn
+    events              = ["s3:ObjectCreated:*"]
+    filter_prefix       = "conversation/"
+    filter_suffix       = ".json"
+  }
   lambda_function {
     lambda_function_arn = aws_lambda_function.analytics.arn
     events              = ["s3:ObjectCreated:*"]
     filter_prefix       = "analytics/"
     filter_suffix       = ".json"
   }
-  depends_on = [aws_lambda_permission.analytics]
+  depends_on = [aws_lambda_permission.s32rds]
 }
 
 ###
