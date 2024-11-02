@@ -27,6 +27,12 @@ resource "aws_security_group" "ec2" {
     protocol = "tcp"
     cidr_blocks = [ "50.68.120.205/32", "67.87.6.71/32", "99.76.147.145/32", data.aws_vpc.default.cidr_block ]
   }
+  ingress {
+    from_port = 8283
+    to_port = 8283
+    protocol = "tcp"
+    cidr_blocks = [ "50.68.120.205/32", "67.87.6.71/32", "99.76.147.145/32", data.aws_vpc.default.cidr_block ]
+  }
   egress {
    from_port = 0
    to_port = 0

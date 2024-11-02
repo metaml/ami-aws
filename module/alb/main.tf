@@ -19,6 +19,17 @@ resource "aws_security_group" "https" {
     protocol    = "tcp"
     cidr_blocks = [ "50.68.120.205/32", "67.87.6.71/32", "99.76.147.145/32", data.aws_vpc.default.cidr_block ]
   }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [ "0.0.0.0/0" ]
+  }
+}
+
+resource "aws_security_group" "http-letta" {
+  name        = "http-letta"
+  description = "allow incoming HTTP connectionsto letta"
   ingress {
     from_port   = 8283
     to_port     = 8283
@@ -40,7 +51,7 @@ resource "aws_lb" "alb" {
   load_balancer_type = "network"
   # note: http/https lb below vs. a network lb above
   # load_balancer_type = "application"
-  security_groups    = [ aws_security_group.https.id ]
+  security_groups    = [ aws_security_group.https.id, aws_security_group.http-letta.id ]
   subnets = [
     data.aws_subnet.default-a.id,
     data.aws_subnet.default-b.id,
@@ -54,17 +65,17 @@ resource "aws_lb" "alb" {
 
 # ami
 resource "aws_lb_target_group" "ami" {
-  name         = "ami"
-  port         = 8000
-  protocol     = "TCP"
+  name        = "ami"
+  port        = 8000
+  protocol    = "TCP"
   # protocol     = "HTTPS"    # load_balancer_type = "application"
-  target_type  = "instance"
+  target_type = "instance"
   vpc_id = data.aws_vpc.default.id
   health_check {
-    interval            = 8
+    interval            = 13
     path                = "/ping"
     protocol            = "HTTPS"
-    timeout             = 5
+    timeout             = 8
     healthy_threshold   = 2
     unhealthy_threshold = 2
   }
@@ -95,10 +106,10 @@ resource "aws_lb_target_group" "letta" {
   target_type = "instance"
   vpc_id = data.aws_vpc.default.id
   health_check {
-    interval            = 8
-    path                = "/health"
+    interval            = 13
+    path                = "/"
     protocol            = "HTTP"
-    timeout             = 5
+    timeout             = 8
     healthy_threshold   = 2
     unhealthy_threshold = 2
   }
