@@ -9,6 +9,7 @@ data "aws_instance" "ec2" {
   }
 }
 
+# @todo rename
 resource "aws_security_group" "https" {
   name        = "https"
   description = "allow incoming HTTPS connections"
@@ -51,6 +52,7 @@ resource "aws_lb" "alb" {
   depends_on = [ data.aws_instance.ec2 ]
 }
 
+# ami
 resource "aws_lb_target_group" "ami" {
   name         = "ami"
   port         = 8000
@@ -63,7 +65,7 @@ resource "aws_lb_target_group" "ami" {
     path                = "/ping"
     protocol            = "HTTPS"
     timeout             = 5
-    healthy_threshold   = 3
+    healthy_threshold   = 2
     unhealthy_threshold = 2
   }
 }
@@ -79,19 +81,42 @@ resource "aws_lb_listener" "listener-8000" {
   depends_on = [ aws_lb_target_group.ami ]
 }
 
+resource "aws_lb_target_group_attachment" "ami" {
+  count            = 1
+  target_group_arn = aws_lb_target_group.ami.arn
+  target_id        = data.aws_instance.ec2.id
+}
+
+# letta
+resource "aws_lb_target_group" "letta" {
+  name        = "letta"
+  port        = 8283
+  protocol    = "TCP"    # load_balancer_type = "application"
+  target_type = "instance"
+  vpc_id = data.aws_vpc.default.id
+  health_check {
+    interval            = 8
+    path                = "/health"
+    protocol            = "HTTP"
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+}
+
 resource "aws_lb_listener" "listener-8283" {
   load_balancer_arn = aws_lb.alb.id
   port              = 8283
   protocol          = "TCP"
   default_action {
-    target_group_arn = aws_lb_target_group.ami.arn
+    target_group_arn = aws_lb_target_group.letta.arn
     type             = "forward"
   }
-  depends_on = [ aws_lb_target_group.ami ]
+  depends_on = [ aws_lb_target_group.letta ]
 }
 
-resource "aws_lb_target_group_attachment" "ami" {
+resource "aws_lb_target_group_attachment" "letta" {
   count            = 1
-  target_group_arn = aws_lb_target_group.ami.arn
+  target_group_arn = aws_lb_target_group.letta.arn
   target_id        = data.aws_instance.ec2.id
 }
