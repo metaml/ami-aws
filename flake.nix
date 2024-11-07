@@ -16,7 +16,7 @@
         python-pkgs = pkgs.python311Packages;
         postgresql = pkgs.postgresql_16;
         postgresql-pkgs = pkgs.postgresql16Packages;
-        name = "aip-lambda";
+        name = "ami-lambda";
         version = "0.1.0";
         revision = "${self.lastModifiedDate}-${self.shortRev or "dirty"}";
       in {

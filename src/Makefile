@@ -1,4 +1,4 @@
-image:;	docker build --platform linux/amd64 --tag aip-lambda:latest .
+image:;	docker build --platform linux/amd64 --tag ami-lambda:latest .
 
 test: export MODE = dev
 test:; python ./analytics.py

@@ -4,7 +4,7 @@ data "aws_subnet" "default-a" {id = "subnet-05413c6d31d066a8c"}
 data "aws_subnet" "default-b" {id = "subnet-09b373b677dc9a809"}
 data "aws_subnet" "default-c" {id = "subnet-01536c0d51454e3ad"}
 data "aws_caller_identity" "current" {}
-data "aws_ecr_repository" "aip-lambda" { name = "aip-lambda" }
+data "aws_ecr_repository" "ami-lambda" { name = "ami-lambda" }
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"
@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "aip" {
-  name   = "aip-lambda-role"
+  name   = "ami-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
@@ -65,7 +65,7 @@ resource "aws_security_group" "lambda" {
 ### sns to s3
 resource "aws_lambda_function" "sns2s3" {
   function_name = "sns2s3"
-  image_uri     = "${data.aws_ecr_repository.aip-lambda.repository_url}:latest"
+  image_uri     = "${data.aws_ecr_repository.ami-lambda.repository_url}:latest"
   package_type  = "Image"
   role          = aws_iam_role.aip.arn
   timeout       = 300 # seconds
@@ -103,7 +103,7 @@ resource "aws_sns_topic_subscription" "sns2s3" {
 ### s3 to rds (postgresql)
 resource "aws_lambda_function" "s32rds" {
   function_name = "s32rds"
-  image_uri     = "${data.aws_ecr_repository.aip-lambda.repository_url}:latest"
+  image_uri     = "${data.aws_ecr_repository.ami-lambda.repository_url}:latest"
   package_type  = "Image"
   role          = aws_iam_role.aip.arn
   timeout       = 900 # seconds
@@ -134,7 +134,7 @@ resource "aws_lambda_permission" "s32rds" {
 ### text analytics
 resource "aws_lambda_function" "analytics" {
   function_name = "analytics"
-  image_uri     = "${data.aws_ecr_repository.aip-lambda.repository_url}:latest"
+  image_uri     = "${data.aws_ecr_repository.ami-lambda.repository_url}:latest"
   package_type  = "Image"
   role          = aws_iam_role.aip.arn
   timeout       = 900 # seconds
