@@ -1,11 +1,19 @@
-# aip-aws
+# ami-aws
 
-Terraform provisioning for AIP.
+Terraform provisioning for AMI.
 
-Manual intervention was required to enable/disable some features due to not being able to find the terraform feature to automate said feature:
+Manual intervention was required to enable/disable some features due to not being able to find a terraform way to automate:
 
 * under Systems Manager > Fleet Manager > Managed nodes
   * enable Configure Default Host Management
+
+
+AWS ec2 instances are managed in ./etc/nixos:
+
+* edit configuration.nix in above local directory
+
+* make rebuild to deply and switch nixos configuration
+
 
 references:
 
