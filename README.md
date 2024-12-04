@@ -12,7 +12,7 @@ AWS ec2 instances are managed in ./etc/nixos:
 
 * edit configuration.nix in above local directory
 
-* make rebuild to deply and switch nixos configuration
+* "make rebuild" to deply and switch nixos configuration
 
 
 references:
