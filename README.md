@@ -1,4 +1,4 @@
-#### Terraform provisioning for AMI
+#### Inital terraform provisioning for AMI
 
 Manual intervention was required to enable/disable some features due to not being able to find a terraform way to automate:
 
@@ -15,7 +15,7 @@ Manual intervention was required to enable/disable some features due to not bein
 
 * "make apply" to apply changes to AWS
 
-#### AWS ec2 instances
+#### Manage AWS ec2 instances (NixOS)
 
 * nixos instance are managed from ./etc/nixos
 
