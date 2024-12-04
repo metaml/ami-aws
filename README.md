@@ -5,6 +5,15 @@ Manual intervention was required to enable/disable some features due to not bein
 * under Systems Manager > Fleet Manager > Managed nodes
   * enable Configure Default Host Management
 
+#### AWS management
+
+* edit/add terraform files to module
+
+* turn your module in "main.tf"
+
+* "make" to run terraform plan
+
+* "make apply" to apply changes to AWS
 
 #### AWS ec2 instances
 
