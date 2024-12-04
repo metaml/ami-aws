@@ -7,7 +7,7 @@ Manual intervention was required to enable/disable some features due to not bein
 
 #### AWS management
 
-* edit/add terraform files to module
+* edit/add terraform files to the "module" directory
 
 * turn your module in "main.tf"
 
@@ -19,7 +19,7 @@ Manual intervention was required to enable/disable some features due to not bein
 
 * nixos instance are managed from ./etc/nixos
 
-* edit configuration.nix in above local directory
+* edit "configuration.nix" in above local directory
 
 * "make rebuild" to deply and switch nixos configuration
 
