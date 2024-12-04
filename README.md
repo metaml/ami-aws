@@ -1,6 +1,4 @@
-#### ami-aws
-
-##### Terraform provisioning for AMI
+#### Terraform provisioning for AMI
 
 Manual intervention was required to enable/disable some features due to not being able to find a terraform way to automate:
 
@@ -8,7 +6,7 @@ Manual intervention was required to enable/disable some features due to not bein
   * enable Configure Default Host Management
 
 
-##### AWS ec2 instances
+#### AWS ec2 instances
 
 * nixos instance are managed from ./etc/nixos
 
